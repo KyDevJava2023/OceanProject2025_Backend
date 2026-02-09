@@ -1,0 +1,271 @@
+<div th:fragment="content">
+
+    <!-- Single Page Header start -->
+    <div class="container-fluid page-header py-5">
+        <h1 class="text-center text-white display-6"
+            th:text="${product.name}">Shop Detail</h1>
+        <ol class="breadcrumb justify-content-center mb-0">
+            <li class="breadcrumb-item"><a th:href="@{/}">Home</a></li>
+            <li class="breadcrumb-item"><a th:href="@{/san-pham}">Sản phẩm</a></li>
+            <li class="breadcrumb-item active text-white" th:text="${product.name}">Detail</li>
+        </ol>
+    </div>
+    <!-- Single Page Header End -->
+
+
+    <!-- Single Product Start -->
+    <div class="container-fluid py-5 mt-5">
+        <div class="container py-5">
+            <div class="row g-4 mb-5">
+                <div class="col-lg-8 col-xl-9">
+                    <div class="row g-4">
+
+                        <!-- IMAGE -->
+                        <div class="col-lg-6">
+                            <div class="border rounded">
+                                <a th:href="${product.thumbnail}" target="_blank">
+                                    <img th:src="${product.thumbnail}"
+                                         class="img-fluid rounded"
+                                         th:alt="${product.name}">
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- INFO -->
+                        <div class="col-lg-6">
+                            <h4 class="fw-bold mb-3" th:text="${product.name}">Brocoli</h4>
+
+                            <p class="mb-3">
+                                Category:
+                                <a class="text-primary"
+                                   th:href="@{/san-pham(cate=${product.category.slug})}"
+                                   th:text="${product.category.name}">Vegetables</a>
+                            </p>
+
+                            <h5 class="fw-bold mb-3"
+                                th:text="${product.price != null
+                                    ? #numbers.formatDecimal(product.price,0,'POINT',0,'COMMA') + ' đ'
+                                    : 'Liên hệ'}">0 đ</h5>
+
+                            <!-- rating placeholder -->
+                            <div class="d-flex mb-4">
+                                <i class="fa fa-star text-secondary"></i>
+                                <i class="fa fa-star text-secondary"></i>
+                                <i class="fa fa-star text-secondary"></i>
+                                <i class="fa fa-star text-secondary"></i>
+                                <i class="fa fa-star"></i>
+                            </div>
+
+                            <p class="mb-4"
+                               th:text="${product.shortDescription != null ? product.shortDescription : 'Chưa có mô tả ngắn.'}">
+                                short desc
+                            </p>
+
+                            <!-- quantity (placeholder) -->
+                            <div class="input-group quantity mb-5" style="width: 100px;">
+                                <div class="input-group-btn">
+                                    <button class="btn btn-sm btn-minus rounded-circle bg-light border" type="button">
+                                        <i class="fa fa-minus"></i>
+                                    </button>
+                                </div>
+                                <input type="text" class="form-control form-control-sm text-center border-0" value="1">
+                                <div class="input-group-btn">
+                                    <button class="btn btn-sm btn-plus rounded-circle bg-light border" type="button">
+                                        <i class="fa fa-plus"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <a th:href="@{/lien-he(message=${'Báo giá sản phẩm: ' + product.name})}"
+                               class="btn border border-secondary rounded-pill px-4 py-2 mb-4 text-primary">
+                                <i class="fa fa-shopping-bag me-2 text-primary"></i> Nhận báo giá
+                            </a>
+                        </div>
+
+                        <!-- TABS -->
+                        <div class="col-lg-12">
+                            <nav>
+                                <div class="nav nav-tabs mb-3">
+                                    <button class="nav-link active border-white border-bottom-0" type="button" role="tab"
+                                            id="nav-about-tab" data-bs-toggle="tab" data-bs-target="#nav-about"
+                                            aria-controls="nav-about" aria-selected="true">Description</button>
+                                    <button class="nav-link border-white border-bottom-0" type="button" role="tab"
+                                            id="nav-mission-tab" data-bs-toggle="tab" data-bs-target="#nav-mission"
+                                            aria-controls="nav-mission" aria-selected="false">Reviews</button>
+                                </div>
+                            </nav>
+
+                            <div class="tab-content mb-5">
+                                <!-- DESCRIPTION -->
+                                <div class="tab-pane active" id="nav-about" role="tabpanel" aria-labelledby="nav-about-tab">
+                                    <div th:if="${product.content != null}" th:utext="${product.content}"></div>
+                                    <p th:if="${product.content == null}" class="text-muted mb-0">Chưa có nội dung chi tiết.</p>
+                                </div>
+
+                                <!-- REVIEWS placeholder -->
+                                <div class="tab-pane" id="nav-mission" role="tabpanel" aria-labelledby="nav-mission-tab">
+                                    <p class="text-muted mb-0">Chức năng đánh giá sẽ cập nhật sau.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- COMMENT FORM placeholder -->
+                        <form action="#" onsubmit="return false;">
+                            <h4 class="mb-5 fw-bold">Leave a Reply</h4>
+                            <div class="row g-4">
+                                <div class="col-lg-6">
+                                    <div class="border-bottom rounded">
+                                        <input type="text" class="form-control border-0 me-4" placeholder="Your Name *">
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="border-bottom rounded">
+                                        <input type="email" class="form-control border-0" placeholder="Your Email *">
+                                    </div>
+                                </div>
+                                <div class="col-lg-12">
+                                    <div class="border-bottom rounded my-4">
+                                        <textarea class="form-control border-0" cols="30" rows="8"
+                                                  placeholder="Your Review *" spellcheck="false"></textarea>
+                                    </div>
+                                </div>
+                                <div class="col-lg-12">
+                                    <div class="d-flex justify-content-between py-3 mb-5">
+                                        <div class="d-flex align-items-center">
+                                            <p class="mb-0 me-3">Please rate:</p>
+                                            <div class="d-flex align-items-center" style="font-size: 12px;">
+                                                <i class="fa fa-star text-muted"></i>
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star"></i>
+                                                <i class="fa fa-star"></i>
+                                            </div>
+                                        </div>
+                                        <a href="#" class="btn border border-secondary text-primary rounded-pill px-4 py-3">
+                                            Post Comment
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+
+                    </div>
+                </div>
+
+                <!-- SIDEBAR -->
+                <div class="col-lg-4 col-xl-3">
+                    <div class="row g-4 fruite">
+
+                        <!-- SEARCH -->
+                        <div class="col-lg-12">
+                            <form th:action="@{/san-pham}" method="get">
+                                <div class="input-group w-100 mx-auto d-flex mb-4">
+                                    <input type="search" name="q" class="form-control p-3"
+                                           placeholder="keywords" aria-describedby="search-icon-1">
+                                    <button class="input-group-text p-3" id="search-icon-1" type="submit">
+                                        <i class="fa fa-search"></i>
+                                    </button>
+                                </div>
+                            </form>
+
+                            <!-- CATEGORIES -->
+                            <div class="mb-4">
+                                <h4>Categories</h4>
+                                <ul class="list-unstyled fruite-categorie">
+                                    <li th:each="c : ${categoryCounts}">
+                                        <div class="d-flex justify-content-between fruite-name">
+                                            <a th:href="@{/san-pham(cate=${c.slug})}"
+                                               th:classappend="${c.slug == product.category.slug} ? 'text-primary fw-bold' : ''">
+                                                <i class="fas fa-apple-alt me-2"></i>
+                                                <span th:text="${c.name}">Cate</span>
+                                            </a>
+                                            <span th:text="'(' + ${c.count} + ')'">(0)</span>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- FEATURED -->
+                        <div class="col-lg-12">
+                            <h4 class="mb-4">Featured products</h4>
+
+                            <div class="d-flex align-items-center justify-content-start mb-3"
+                                 th:each="fp : ${featuredProducts}">
+                                <div class="rounded me-3" style="width: 100px; height: 100px;">
+                                    <img th:src="${fp.thumbnail}" class="img-fluid rounded"
+                                         th:alt="${fp.name}">
+                                </div>
+                                <div>
+                                    <a th:href="@{'/san-pham/' + ${fp.slug}}">
+                                        <h6 class="mb-2" th:text="${fp.name}">Big Banana</h6>
+                                    </a>
+                                    <div class="d-flex mb-2">
+                                        <i class="fa fa-star text-secondary"></i>
+                                        <i class="fa fa-star text-secondary"></i>
+                                        <i class="fa fa-star text-secondary"></i>
+                                        <i class="fa fa-star text-secondary"></i>
+                                        <i class="fa fa-star"></i>
+                                    </div>
+                                    <div class="d-flex mb-2">
+                                        <h5 class="fw-bold me-2"
+                                            th:text="${fp.price != null
+                                                ? #numbers.formatDecimal(fp.price,0,'POINT',0,'COMMA') + ' đ'
+                                                : 'Liên hệ'}">0 đ</h5>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-center my-4">
+                                <a th:href="@{/san-pham}"
+                                   class="btn border border-secondary px-4 py-3 rounded-pill text-primary w-100">
+                                    View More
+                                </a>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <!-- RELATED -->
+            <h1 class="fw-bold mb-0">Related products</h1>
+            <div class="vesitable">
+                <div class="owl-carousel vegetable-carousel justify-content-center">
+                    <div class="border border-primary rounded position-relative vesitable-item"
+                         th:each="rp : ${relatedProducts}">
+                        <div class="vesitable-img">
+                            <img th:src="${rp.thumbnail}" class="img-fluid w-100 rounded-top"
+                                 th:alt="${rp.name}">
+                        </div>
+                        <div class="text-white bg-primary px-3 py-1 rounded position-absolute"
+                             style="top: 10px; right: 10px;"
+                             th:text="${rp.category.name}">
+                            Category
+                        </div>
+                        <div class="p-4 pb-0 rounded-bottom">
+                            <a th:href="@{'/san-pham/' + ${rp.slug}}">
+                                <h4 th:text="${rp.name}">Parsely</h4>
+                            </a>
+                            <p th:text="${rp.shortDescription != null ? rp.shortDescription : '—'}">
+                                short
+                            </p>
+                            <div class="d-flex justify-content-between flex-lg-wrap">
+                                <p class="text-dark fs-5 fw-bold"
+                                   th:text="${rp.price != null
+                                       ? #numbers.formatDecimal(rp.price,0,'POINT',0,'COMMA') + ' đ'
+                                       : 'Liên hệ'}">$0</p>
+                                <a th:href="@{'/san-pham/' + ${rp.slug}}"
+                                   class="btn border border-secondary rounded-pill px-3 py-1 mb-4 text-primary">
+                                    <i class="fa fa-eye me-2 text-primary"></i> Xem
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <!-- Single Product End -->
+</div>

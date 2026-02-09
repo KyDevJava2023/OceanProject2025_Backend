@@ -28,6 +28,52 @@
 
     <!-- Template Stylesheet (static/site/css/...) -->
     <link rel="stylesheet" th:href="@{/site/css/style.css}">
+    <!-- ========================= -->
+    <!-- Schema.org JSON-LD -->
+    <!-- ========================= -->
+  <script type="application/ld+json" th:inline="javascript" th:if="${schemaPage == 'home'}">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "OceanFN",
+  "url": [[${baseUrl + '/'}]],
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": [[${baseUrl + '/san-pham?q={search_term_string}'}]],
+    "query-input": "required name=search_term_string"
+  }
+}
+</script>
+
+
+    <script type="application/ld+json" th:inline="javascript" th:if="${schemaPage == 'productList'}">
+{
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "url": [[${currentUrl}]],
+  "name": "Danh sách sản phẩm"
+}
+</script>
+
+<script type="application/ld+json" th:inline="javascript" th:if="${schemaPage == 'productDetail' and product != null}">
+{
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "name": [[${product.name}]],
+  "image": [[${product.thumbnail}]],
+  "sku": [[${product.id}]],
+  "category": [[${product.category != null ? product.category.name : ''}]],
+  "offers": {
+    "@type": "Offer",
+    "url": [[${currentUrl}]],
+    "priceCurrency": "VND",
+    "price": [[${product.price != null ? product.price : 0}]],
+    "availability": "https://schema.org/InStock"
+  }
+}
+</script>
+
+
 </head>
 
 <body>

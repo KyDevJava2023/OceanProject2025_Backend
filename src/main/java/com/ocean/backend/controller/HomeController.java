@@ -1,28 +1,29 @@
 package com.ocean.backend.controller;
 
 import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import com.ocean.backend.entity.Product;
+import com.ocean.backend.entity.enums.Status;
 import com.ocean.backend.repository.CategoryRepository;
 import com.ocean.backend.repository.ProductRepository;
-import com.ocean.backend.entity.enums.Status;
-import java.util.List;
-import java.util.Map;
-import lombok.RequiredArgsConstructor;
 
-import org.springframework.ui.Model;
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 
 @Controller
 @RequiredArgsConstructor
-public class HomeController {
+public class HomeController extends BaseController {
     private final CategoryRepository categoryRepo;
     private final ProductRepository productRepo;
 
     @GetMapping("/")
-    public String home(Model model) {
+    public String home(HttpServletRequest request, Model model) {
         // 1) lấy 5 category PRODUCT
         var topCats = categoryRepo.findTop5ByTypeAndStatusOrderByIdAsc("PRODUCT", Status.ACTIVE);
         var cartonProducts = productRepo
@@ -43,6 +44,8 @@ public class HomeController {
         model.addAttribute("topCats", topCats);
         model.addAttribute("bestSellers", bestSellers);
         model.addAttribute("productsByCat", productsByCat);
+        addSeoUrls(request, model);
+        model.addAttribute("schemaPage", "home");
         model.addAttribute("content", "site/home");
         return "site/layout/base";
     }
