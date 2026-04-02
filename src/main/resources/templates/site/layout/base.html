@@ -1,78 +1,180 @@
 <!DOCTYPE html>
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
 
-<head>
+<head xmlns:th="http://www.thymeleaf.org">
+    <!-- ========================= -->
+    <!-- BASIC META -->
+    <!-- ========================= -->
     <meta charset="utf-8">
-    <title>Fruitables - Vegetable Website Template</title>
-    <meta content="width=device-width, initial-scale=1.0" name="viewport">
-    <meta content="" name="keywords">
-    <meta content="" name="description">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-    <!-- Google Web Fonts -->
+    <title th:text="${seo != null && seo.metaTitle != null
+        ? seo.metaTitle
+        : 'Ocean Bao Bì – Sản xuất thùng carton & vật tư đóng gói tại TP.HCM'}">
+        Ocean Bao Bì
+    </title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <meta name="description"
+          th:content="${seo != null && seo.metaDescription != null
+            ? seo.metaDescription
+            : 'Ocean Bao Bì chuyên sản xuất thùng carton 3–5–7 lớp, in ấn theo yêu cầu, cung cấp vật tư đóng gói tại TP.HCM.'}">
+
+    <meta name="keywords"
+          th:content="${seo != null && seo.metaKeywords != null
+            ? seo.metaKeywords
+            : 'bao bì carton, thùng carton, ocean bao bì, vật tư đóng gói'}">
+
+    <!-- ========================= -->
+    <!-- ROBOTS & INDEX -->
+    <!-- ========================= -->
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+    <meta name="googlebot" content="index, follow">
+
+    <!-- ========================= -->
+    <!-- CANONICAL -->
+    <!-- ========================= -->
+    <link rel="canonical" th:href="${currentUrl}">
+
+    <!-- ========================= -->
+    <!-- OPEN GRAPH -->
+    <!-- ========================= -->
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Ocean Bao Bì">
+    <meta property="og:locale" content="vi_VN">
+
+    <meta property="og:title"
+          th:content="${seo != null && seo.metaTitle != null
+            ? seo.metaTitle
+            : 'Ocean Bao Bì'}">
+
+    <meta property="og:description"
+          th:content="${seo != null && seo.metaDescription != null
+            ? seo.metaDescription
+            : 'Sản xuất và in ấn bao bì carton tại TP.HCM'}">
+
+    <meta property="og:url" th:content="${currentUrl}">
+
+    <meta property="og:image"
+          th:content="${seo != null && seo.ogImage != null
+            ? seo.ogImage
+            : '/site/img/og-default.jpg'}">
+
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+
+    <!-- ========================= -->
+    <!-- TWITTER CARD -->
+    <!-- ========================= -->
+    <meta name="twitter:card" content="summary_large_image">
+
+    <meta name="twitter:title"
+          th:content="${seo != null && seo.metaTitle != null
+            ? seo.metaTitle
+            : 'Ocean Bao Bì'}">
+
+    <meta name="twitter:description"
+          th:content="${seo != null && seo.metaDescription != null
+            ? seo.metaDescription
+            : 'Sản xuất và in ấn bao bì carton'}">
+
+    <meta name="twitter:image"
+          th:content="${seo != null && seo.ogImage != null
+            ? seo.ogImage
+            : '/site/img/og-default.jpg'}">
+
+    <!-- ========================= -->
+    <!-- LOCAL SEO -->
+    <!-- ========================= -->
+    <meta http-equiv="content-language" content="vi">
+    <meta name="language" content="Vietnamese">
+    <meta name="geo.region" content="VN-SG">
+    <meta name="geo.placename" content="Ho Chi Minh City">
+    <meta name="geo.position" content="10.8231;106.6297">
+    <meta name="ICBM" content="10.8231, 106.6297">
+
+    <!-- ========================= -->
+    <!-- AUTHOR -->
+    <!-- ========================= -->
+    <meta name="author" content="Ocean Bao Bì">
+    <meta name="copyright" content="Ocean Bao Bì">
+    <meta name="revisit-after" content="7 days">
+
+    <!-- ========================= -->
+    <!-- GOOGLE FONTS -->
+    <!-- ========================= -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Raleway:wght@600;800&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Raleway:wght@600;800&display=swap"
+          rel="stylesheet">
 
-    <!-- Icon Font Stylesheet -->
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css" />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- ========================= -->
+    <!-- ICONS -->
+    <!-- ========================= -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css">
 
-    <!-- Libraries Stylesheet (static/site/lib/...) -->
+    <!-- ========================= -->
+    <!-- CSS LIBRARIES -->
+    <!-- ========================= -->
     <link rel="stylesheet" th:href="@{/site/lib/lightbox/css/lightbox.min.css}">
     <link rel="stylesheet" th:href="@{/site/lib/owlcarousel/assets/owl.carousel.min.css}">
 
-    <!-- Customized Bootstrap Stylesheet (static/site/css/...) -->
+    <!-- ========================= -->
+    <!-- BOOTSTRAP & MAIN CSS -->
+    <!-- ========================= -->
     <link rel="stylesheet" th:href="@{/site/css/bootstrap.min.css}">
-
-    <!-- Template Stylesheet (static/site/css/...) -->
     <link rel="stylesheet" th:href="@{/site/css/style.css}">
-    <!-- ========================= -->
-    <!-- Schema.org JSON-LD -->
-    <!-- ========================= -->
-  <script type="application/ld+json" th:inline="javascript" th:if="${schemaPage == 'home'}">
-{
-  "@context": "https://schema.org",
-  "@type": "WebSite",
-  "name": "OceanFN",
-  "url": [[${baseUrl + '/'}]],
-  "potentialAction": {
-    "@type": "SearchAction",
-    "target": [[${baseUrl + '/san-pham?q={search_term_string}'}]],
-    "query-input": "required name=search_term_string"
-  }
-}
-</script>
 
+    <!-- ========================= -->
+    <!-- SCHEMA.ORG JSON-LD -->
+    <!-- ========================= -->
 
+    <!-- Website -->
+    <script type="application/ld+json" th:inline="javascript" th:if="${schemaPage == 'home'}">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Ocean Bao Bì",
+      "url": [[${baseUrl + '/'}]],
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": [[${baseUrl + '/san-pham?q={search_term_string}'}]],
+        "query-input": "required name=search_term_string"
+      }
+    }
+    </script>
+
+    <!-- Product list -->
     <script type="application/ld+json" th:inline="javascript" th:if="${schemaPage == 'productList'}">
-{
-  "@context": "https://schema.org",
-  "@type": "CollectionPage",
-  "url": [[${currentUrl}]],
-  "name": "Danh sách sản phẩm"
-}
-</script>
+    {
+      "@context": "https://schema.org",
+      "@type": "CollectionPage",
+      "url": [[${currentUrl}]],
+      "name": "Danh sách sản phẩm Ocean Bao Bì"
+    }
+    </script>
 
-<script type="application/ld+json" th:inline="javascript" th:if="${schemaPage == 'productDetail' and product != null}">
-{
-  "@context": "https://schema.org",
-  "@type": "Product",
-  "name": [[${product.name}]],
-  "image": [[${product.thumbnail}]],
-  "sku": [[${product.id}]],
-  "category": [[${product.category != null ? product.category.name : ''}]],
-  "offers": {
-    "@type": "Offer",
-    "url": [[${currentUrl}]],
-    "priceCurrency": "VND",
-    "price": [[${product.price != null ? product.price : 0}]],
-    "availability": "https://schema.org/InStock"
-  }
-}
-</script>
-
+    <!-- Product detail -->
+    <script type="application/ld+json" th:inline="javascript"
+            th:if="${schemaPage == 'productDetail' and product != null}">
+    {
+      "@context": "https://schema.org",
+      "@type": "Product",
+      "name": [[${product.name}]],
+      "image": [[${product.thumbnail}]],
+      "sku": [[${product.id}]],
+      "category": [[${product.category != null ? product.category.name : ''}]],
+      "offers": {
+        "@type": "Offer",
+        "url": [[${currentUrl}]],
+        "priceCurrency": "VND",
+        "price": [[${product.price != null ? product.price : 0}]],
+        "availability": "https://schema.org/InStock"
+      }
+    }
+    </script>
 
 </head>
 
@@ -92,24 +194,6 @@
 
     <th:block th:replace="~{site/layout/footer :: footer}"></th:block>
 
-    <!-- Copyright Start -->
-    <div class="container-fluid copyright bg-dark py-4">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6 text-center text-md-start mb-3 mb-md-0">
-                    <span class="text-light">
-                        <a th:href="@{/}">
-                            <i class="fas fa-copyright text-light me-2"></i>Your Site Name
-                        </a>, All right reserved.
-                    </span>
-                </div>
-                <div class="col-md-6 my-auto text-center text-md-end text-white">
-                    Designed By <a class="border-bottom" href="https://htmlcodex.com">HTML Codex</a>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Copyright End -->
 
     <!-- Back to Top -->
     <a href="#" class="btn btn-primary border-3 border-primary rounded-circle back-to-top">

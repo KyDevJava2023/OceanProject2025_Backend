@@ -1,0 +1,821 @@
+<div th:fragment="content">
+<!-- Single Page Header -->
+<div class="container-fluid page-header py-5">
+  <h1 class="text-center text-white display-6">Dịch Vụ</h1>
+  <ol class="breadcrumb justify-content-center mb-0">
+    <li class="breadcrumb-item"><a href="/">Trang chủ</a></li>
+    <li class="breadcrumb-item active text-white">Dịch vụ</li>
+  </ol>
+</div>
+<style>
+
+/* ── TOKENS ── */
+:root {
+  --c-blue:     #31b8ed;
+  --c-blue-dk:  #1a8bbf;
+  --c-orange:   #ff6a00;
+  --c-ink:      #0d0f14;
+  --c-steel:    #181c24;
+  --c-plate:    #252b36;
+  --c-mist:     #a0aab8;
+  --c-white:    #f4f7fa;
+
+  --f-body:     'Oswald', sans-serif;
+  --ease:       cubic-bezier(.25,.46,.45,.94);
+}
+
+/* ── RESET SCOPE ── */
+.svc-root *, .svc-root *::before, .svc-root *::after {
+  box-sizing: border-box; margin: 0; padding: 0;
+}
+.svc-root {
+  font-family: var(--f-body);
+  background: var(--c-ink);
+  color: var(--c-white);
+  overflow-x: hidden;
+}
+
+/* ── HERO INTRO ── */
+.svc-hero {
+  position: relative;
+  padding: 100px 0 80px;
+  background: var(--c-steel);
+  overflow: hidden;
+}
+.svc-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 59px,
+      rgba(49,184,237,.04) 59px,
+      rgba(49,184,237,.04) 60px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 59px,
+      rgba(49,184,237,.04) 59px,
+      rgba(49,184,237,.04) 60px
+    );
+  pointer-events: none;
+}
+.svc-hero__inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 32px;
+  display: grid;
+  grid-template-columns: 1fr 420px;
+  gap: 60px;
+  align-items: center;
+}
+.svc-hero__eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--f-head);
+  font-size: .8rem;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--c-blue);
+  margin-bottom: 20px;
+}
+.svc-hero__eyebrow::before {
+  content: '';
+  display: block;
+  width: 32px; height: 2px;
+  background: var(--c-blue);
+}
+.svc-hero__h1 {
+  font-family: var(--f-head);
+  font-size: clamp(3rem, 6vw, 5.5rem);
+  font-weight: 900;
+  line-height: .95;
+  text-transform: uppercase;
+  letter-spacing: -1px;
+  color: var(--c-white);
+}
+.svc-hero__h1 em {
+  font-style: normal;
+  color: var(--c-blue);
+  display: block;
+}
+.svc-hero__sub {
+  margin-top: 24px;
+  font-size: 1rem;
+  color: var(--c-mist);
+  line-height: 1.7;
+  max-width: 480px;
+}
+.svc-hero__cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 36px;
+  background: var(--c-blue);
+  color: var(--c-ink);
+  font-family: var(--f-head);
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 16px 36px;
+  border-radius: 4px;
+  text-decoration: none;
+  transition: background .25s var(--ease), transform .2s var(--ease);
+}
+.svc-hero__cta:hover { background: #5ecbf2; transform: translateY(-2px); }
+.svc-hero__cta svg { width: 18px; height: 18px; fill: var(--c-ink); }
+
+/* Stats panel */
+.svc-hero__stats {
+  background: var(--c-plate);
+  border: 1px solid rgba(49,184,237,.15);
+  border-radius: 8px;
+  padding: 40px 32px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background-clip: padding-box;
+  position: relative;
+  overflow: hidden;
+}
+.svc-hero__stats::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--c-blue), var(--c-orange));
+}
+.stat-cell {
+  background: var(--c-plate);
+  padding: 28px 20px;
+  text-align: center;
+  border: 1px solid rgba(255,255,255,.05);
+}
+.stat-cell__num {
+  font-family: var(--f-head);
+  font-size: 2.8rem;
+  font-weight: 900;
+  color: var(--c-blue);
+  line-height: 1;
+}
+.stat-cell__num sup { font-size: 1.4rem; color: var(--c-orange); }
+.stat-cell__lbl {
+  font-size: .78rem;
+  font-weight: 500;
+  color: var(--c-mist);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-top: 6px;
+}
+
+/* ── SECTION SHARED ── */
+.svc-section {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 32px;
+}
+.svc-label {
+  font-family: var(--f-head);
+  font-size: .75rem;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--c-blue);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.svc-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: rgba(49,184,237,.25);
+  max-width: 80px;
+}
+.svc-h2 {
+  font-family: var(--f-head);
+  font-size: clamp(2rem, 4vw, 3.2rem);
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: -.5px;
+  line-height: 1.05;
+  color: var(--c-white);
+}
+.svc-h2 span { color: var(--c-blue); }
+
+/* ── MAIN SERVICES GRID ── */
+.svc-main {
+  padding: 90px 0;
+  background: var(--c-ink);
+}
+.svc-main__header {
+  max-width: 1200px;
+  margin: 0 auto 60px;
+  padding: 0 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 32px;
+}
+.svc-main__header p {
+  font-size: .95rem;
+  color: var(--c-mist);
+  line-height: 1.7;
+  max-width: 400px;
+  flex-shrink: 0;
+}
+.svc-grid {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 32px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+}
+
+/* Service card */
+.svc-card {
+  background: var(--c-steel);
+  padding: 44px 36px 40px;
+  position: relative;
+  overflow: hidden;
+  cursor: default;
+  transition: background .3s var(--ease);
+}
+.svc-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0;
+  width: 3px;
+  height: 0;
+  background: var(--c-blue);
+  transition: height .4s var(--ease);
+}
+.svc-card:hover { background: var(--c-plate); }
+.svc-card:hover::before { height: 100%; }
+
+/* Big number watermark */
+.svc-card__num {
+  position: absolute;
+  top: 16px; right: 20px;
+  font-family: var(--f-head);
+  font-size: 5rem;
+  font-weight: 900;
+  color: rgba(255,255,255,.04);
+  line-height: 1;
+  user-select: none;
+  transition: color .3s var(--ease);
+}
+.svc-card:hover .svc-card__num { color: rgba(49,184,237,.07); }
+
+.svc-card__icon {
+  width: 56px; height: 56px;
+  background: rgba(49,184,237,.1);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 24px;
+  transition: background .3s var(--ease);
+}
+.svc-card:hover .svc-card__icon { background: rgba(49,184,237,.2); }
+.svc-card__icon svg { width: 28px; height: 28px; fill: var(--c-blue); }
+
+.svc-card__tag {
+  display: inline-block;
+  font-family: var(--f-head);
+  font-size: .68rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--c-orange);
+  background: rgba(255,106,0,.1);
+  padding: 3px 10px;
+  border-radius: 2px;
+  margin-bottom: 12px;
+}
+.svc-card__title {
+  font-family: var(--f-head);
+  font-size: 1.5rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  color: var(--c-white);
+  margin-bottom: 14px;
+  line-height: 1.15;
+}
+.svc-card__desc {
+  font-size: .88rem;
+  color: var(--c-mist);
+  line-height: 1.7;
+  margin-bottom: 28px;
+}
+.svc-card__list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 32px;
+}
+.svc-card__list li {
+  font-size: .83rem;
+  color: rgba(164,174,196,.85);
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  line-height: 1.5;
+}
+.svc-card__list li::before {
+  content: '▸';
+  color: var(--c-blue);
+  font-size: .75rem;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+.svc-card__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--f-head);
+  font-size: .85rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--c-blue);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(49,184,237,.3);
+  padding-bottom: 2px;
+  transition: color .2s, border-color .2s, gap .2s;
+}
+.svc-card__link:hover { color: #5ecbf2; border-color: #5ecbf2; gap: 14px; }
+.svc-card__link svg { width: 14px; height: 14px; fill: currentColor; }
+
+/* Featured card – spans 2 cols */
+.svc-card--featured {
+  grid-column: span 2;
+  background: var(--c-plate);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+}
+.svc-card--featured .svc-card__body { padding: 44px 40px 40px; }
+.svc-card--featured .svc-card__visual {
+  background: linear-gradient(135deg, #0f1520, #1c2535);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 20px;
+  padding: 40px;
+  border-left: 1px solid rgba(49,184,237,.1);
+  position: relative;
+  overflow: hidden;
+}
+.svc-card--featured .svc-card__visual::before {
+  content: '';
+  position: absolute;
+  width: 300px; height: 300px;
+  background: radial-gradient(circle, rgba(49,184,237,.12) 0%, transparent 70%);
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+}
+.visual-big-icon {
+  position: relative;
+  z-index: 1;
+}
+.visual-big-icon svg { width: 80px; height: 80px; fill: var(--c-blue); opacity: .8; }
+.visual-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  position: relative;
+  z-index: 1;
+}
+.visual-tag {
+  background: rgba(49,184,237,.12);
+  border: 1px solid rgba(49,184,237,.25);
+  color: var(--c-blue);
+  font-family: var(--f-head);
+  font-size: .72rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 5px 12px;
+  border-radius: 3px;
+}
+
+/* ── PROCESS SECTION ── */
+.svc-process {
+  padding: 90px 0;
+  background: var(--c-steel);
+  position: relative;
+  overflow: hidden;
+}
+.svc-process::before {
+  content: 'QUY TRÌNH';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-family: var(--f-head);
+  font-size: clamp(6rem, 15vw, 14rem);
+  font-weight: 900;
+  color: rgba(255,255,255,.02);
+  white-space: nowrap;
+  pointer-events: none;
+  user-select: none;
+}
+.svc-process__steps {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2px;
+  margin-top: 60px;
+}
+.step {
+  background: var(--c-plate);
+  padding: 36px 28px;
+  position: relative;
+  border-top: 3px solid transparent;
+  transition: border-color .3s var(--ease), background .3s var(--ease);
+}
+.step:hover {
+  background: #2a3040;
+  border-top-color: var(--c-blue);
+}
+.step__num {
+  font-family: var(--f-head);
+  font-size: 4rem;
+  font-weight: 900;
+  color: rgba(49,184,237,.15);
+  line-height: 1;
+  margin-bottom: 16px;
+  transition: color .3s;
+}
+.step:hover .step__num { color: rgba(49,184,237,.35); }
+.step__icon {
+  width: 44px; height: 44px;
+  background: rgba(49,184,237,.08);
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+.step__icon svg { width: 22px; height: 22px; fill: var(--c-blue); }
+.step__title {
+  font-family: var(--f-head);
+  font-size: 1.15rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--c-white);
+  margin-bottom: 10px;
+}
+.step__desc {
+  font-size: .83rem;
+  color: var(--c-mist);
+  line-height: 1.6;
+}
+/* Arrow connector */
+.step:not(:last-child)::after {
+  content: '→';
+  position: absolute;
+  top: 40px;
+  right: -14px;
+  color: var(--c-blue);
+  font-size: 1.2rem;
+  z-index: 2;
+}
+
+/* ── CTA BANNER ── */
+.svc-cta {
+  padding: 90px 0;
+  background: linear-gradient(135deg, var(--c-blue-dk) 0%, #0e6e9a 100%);
+  position: relative;
+  overflow: hidden;
+}
+.svc-cta::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    repeating-linear-gradient(
+      -45deg,
+      transparent,
+      transparent 24px,
+      rgba(255,255,255,.03) 24px,
+      rgba(255,255,255,.03) 25px
+    );
+}
+.svc-cta__inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 40px;
+  position: relative;
+}
+.svc-cta__text h2 {
+  font-family: var(--f-head);
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 900;
+  text-transform: uppercase;
+  color: #fff;
+  line-height: 1.1;
+}
+.svc-cta__text p {
+  font-size: .95rem;
+  color: rgba(255,255,255,.8);
+  margin-top: 10px;
+  max-width: 480px;
+}
+.svc-cta__actions {
+  display: flex;
+  gap: 14px;
+  flex-shrink: 0;
+}
+.btn-cta-white {
+  background: #fff;
+  color: var(--c-blue-dk);
+  font-family: var(--f-head);
+  font-size: 1rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 16px 36px;
+  border-radius: 4px;
+  text-decoration: none;
+  transition: transform .2s, box-shadow .2s;
+}
+.btn-cta-white:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(0,0,0,.25); }
+.btn-cta-ghost {
+  background: transparent;
+  color: #fff;
+  font-family: var(--f-head);
+  font-size: 1rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  padding: 14px 34px;
+  border-radius: 4px;
+  text-decoration: none;
+  border: 2px solid rgba(255,255,255,.5);
+  transition: border-color .2s, background .2s;
+}
+.btn-cta-ghost:hover { border-color: #fff; background: rgba(255,255,255,.1); }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 1024px) {
+  .svc-hero__inner { grid-template-columns: 1fr; }
+  .svc-hero__stats { display: none; }
+  .svc-grid { grid-template-columns: 1fr 1fr; }
+  .svc-card--featured { grid-column: span 2; }
+  .svc-process__steps { grid-template-columns: 1fr 1fr; }
+  .step:nth-child(2)::after { display: none; }
+}
+@media (max-width: 700px) {
+  .svc-grid { grid-template-columns: 1fr; }
+  .svc-card--featured { grid-column: span 1; display: block; }
+  .svc-card--featured .svc-card__visual { display: none; }
+  .svc-process__steps { grid-template-columns: 1fr; }
+  .step::after { display: none; }
+  .svc-main__header { flex-direction: column; align-items: flex-start; }
+  .svc-cta__inner { flex-direction: column; text-align: center; }
+  .svc-cta__actions { justify-content: center; flex-wrap: wrap; }
+}
+</style>
+<body>
+<div class="svc-root">
+  <!-- ① HERO -->
+  <section class="svc-hero">
+    <div class="svc-hero__inner">
+      <div>
+        <div class="svc-hero__eyebrow">Dịch vụ của chúng tôi</div>
+        <h1 class="svc-hero__h1">Máy móc<em>cơ khí</em>xây dựng</h1>
+        <p class="svc-hero__sub">
+          Ocean Machinery cung cấp đầy đủ dịch vụ từ tư vấn chọn máy, phân phối hàng chính hãng,
+          giao hàng tận nơi đến bảo hành – bảo trì kỹ thuật tại xưởng. Một điểm đến, toàn bộ giải pháp.
+        </p>
+        <a href="/lien-he" class="svc-hero__cta">
+          <svg viewBox="0 0 24 24"><path d="M6.62 10.79a15.05 15.05 0 006.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1C6.61 21 3 14.39 3 7c0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+          Liên hệ tư vấn ngay
+        </a>
+      </div>
+
+      <div class="svc-hero__stats">
+        <div class="stat-cell">
+          <div class="stat-cell__num">50<sup>+</sup></div>
+          <div class="stat-cell__lbl">Dòng máy</div>
+        </div>
+        <div class="stat-cell">
+          <div class="stat-cell__num">800<sup>+</sup></div>
+          <div class="stat-cell__lbl">Khách hàng</div>
+        </div>
+        <div class="stat-cell">
+          <div class="stat-cell__num">10<sup>+</sup></div>
+          <div class="stat-cell__lbl">Xưởng đối tác</div>
+        </div>
+        <div class="stat-cell">
+          <div class="stat-cell__num">98<sup>%</sup></div>
+          <div class="stat-cell__lbl">Hài lòng</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ② MAIN SERVICES -->
+  <section class="svc-main">
+    <div class="svc-main__header">
+      <div>
+        <div class="svc-label">Danh mục dịch vụ</div>
+        <h2 class="svc-h2">Chúng tôi <span>làm gì</span></h2>
+      </div>
+      <p>Từ lúc bạn chưa biết chọn máy nào đến khi máy vận hành ổn định — Ocean đồng hành xuyên suốt.</p>
+    </div>
+
+    <div class="svc-grid">
+
+      <!-- FEATURED: Phân phối máy móc -->
+      <div class="svc-card svc-card--featured">
+        <div class="svc-card__body">
+          <div class="svc-card__tag">Dịch vụ chính</div>
+          <div class="svc-card__icon">
+            <svg viewBox="0 0 24 24"><path d="M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4zM6 18.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm13.5-9l1.96 2.5H17V9.5h2.5zm-1.5 9c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg>
+          </div>
+          <h3 class="svc-card__title">Phân phối &amp; Buôn bán máy móc</h3>
+          <p class="svc-card__desc">Hàng có sẵn kho, lấy thẳng từ xưởng sản xuất uy tín. Giá xưởng, không qua trung gian, xuất hóa đơn VAT đầy đủ.</p>
+          <ul class="svc-card__list">
+            <li>Máy cán tôn sóng ngói, tôn múi, tôn phẳng các kích thước</li>
+            <li>Máy bẻ đai sắt tự động, servo, thủy lực Ø6–Ø14</li>
+            <li>Máy hàn đai cọc bê tông, máy đan lưới B40 &amp; kẽm gai</li>
+            <li>Máy uốn sắt, máy cắt sắt, máy duỗi sắt các loại</li>
+          </ul>
+          <a href="/san-pham" class="svc-card__link">
+            Xem toàn bộ sản phẩm
+            <svg viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
+          </a>
+        </div>
+        <div class="svc-card__visual">
+          <div class="visual-big-icon">
+            <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tư vấn chọn máy -->
+      <div class="svc-card">
+        <div class="svc-card__num">01</div>
+        <div class="svc-card__icon">
+          <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 9h-2V5h2v6zm0 4h-2v-2h2v2z"/></svg>
+        </div>
+        <div class="svc-card__tag">Miễn phí</div>
+        <h3 class="svc-card__title">Tư vấn chọn máy</h3>
+        <p class="svc-card__desc">Không phải ai cũng biết cần dùng máy gì, công suất bao nhiêu. Chúng tôi tư vấn đúng nhu cầu, không bán hàng tràn lan.</p>
+        <ul class="svc-card__list">
+          <li>Phân tích nhu cầu sản xuất thực tế</li>
+          <li>Đề xuất model phù hợp ngân sách</li>
+          <li>So sánh các hãng, ưu nhược điểm</li>
+          <li>Báo giá chi tiết trong 30 phút</li>
+        </ul>
+        <a href="/lien-he" class="svc-card__link">
+          Nhận tư vấn miễn phí
+          <svg viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
+        </a>
+      </div>
+
+      <!-- Giao hàng toàn quốc -->
+      <div class="svc-card">
+        <div class="svc-card__num">02</div>
+        <div class="svc-card__icon">
+          <svg viewBox="0 0 24 24"><path d="M17 8C8 10 5.9 16.17 3.82 21.34L5.71 22l1-2.3A4.49 4.49 0 008 20c8 0 10-8 10-8-.88.36-1.76.53-2.63.59L17 8zM3.63 11.77a.4.4 0 00.61.08l.9-.73a.4.4 0 00.08-.61C4.38 9.8 4 9.08 4 8.3c0-1.49 1.24-2.7 2.76-2.7.59 0 1.14.18 1.59.49l.87-.71a.4.4 0 00.03-.6A4.36 4.36 0 006.76 4 4.3 4.3 0 002.5 8.3c0 1.3.52 2.48 1.13 3.47z"/></svg>
+        </div>
+        <div class="svc-card__tag">Toàn quốc</div>
+        <h3 class="svc-card__title">Giao hàng tận nơi</h3>
+        <p class="svc-card__desc">Máy móc cồng kềnh, nặng — chúng tôi lo hết từ đóng gói, vận chuyển đến bốc dỡ tại địa điểm của bạn.</p>
+        <ul class="svc-card__list">
+          <li>Giao nội thành TP.HCM trong ngày</li>
+          <li>Ship 63 tỉnh thành, nguyên kiện an toàn</li>
+          <li>Đội xe chuyên dụng hàng cồng kềnh</li>
+          <li>Cam kết đúng hẹn, nguyên vẹn</li>
+        </ul>
+        <a href="/lien-he" class="svc-card__link">
+          Hỏi phí vận chuyển
+          <svg viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
+        </a>
+      </div>
+
+      <!-- Lắp đặt & vận hành -->
+      <div class="svc-card">
+        <div class="svc-card__num">03</div>
+        <div class="svc-card__icon">
+          <svg viewBox="0 0 24 24"><path d="M22.7 19l-9.1-9.1c.9-2.3.4-5-1.5-6.9-2-2-5-2.4-7.4-1.3L9 6 6 9 1.6 4.7C.4 7.1.9 10.1 2.9 12.1c1.9 1.9 4.6 2.4 6.9 1.5l9.1 9.1c.4.4 1 .4 1.4 0l2.3-2.3c.5-.4.5-1.1.1-1.4z"/></svg>
+        </div>
+        <div class="svc-card__tag">Hỗ trợ</div>
+        <h3 class="svc-card__title">Lắp đặt &amp; Vận hành</h3>
+        <p class="svc-card__desc">Kỹ thuật viên đến tận xưởng, lắp đặt, hiệu chỉnh máy và hướng dẫn công nhân vận hành đúng kỹ thuật.</p>
+        <ul class="svc-card__list">
+          <li>Lắp đặt, căn chỉnh đúng thông số</li>
+          <li>Chạy thử và kiểm tra chất lượng đầu ra</li>
+          <li>Hướng dẫn vận hành cho công nhân</li>
+          <li>Bàn giao kèm tài liệu kỹ thuật</li>
+        </ul>
+        <a href="/lien-he" class="svc-card__link">
+          Đặt lịch lắp đặt
+          <svg viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
+        </a>
+      </div>
+
+      <!-- Bảo hành & sửa chữa -->
+      <div class="svc-card">
+        <div class="svc-card__num">04</div>
+        <div class="svc-card__icon">
+          <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/></svg>
+        </div>
+        <div class="svc-card__tag">Chính hãng</div>
+        <h3 class="svc-card__title">Bảo hành &amp; Sửa chữa</h3>
+        <p class="svc-card__desc">Bảo hành theo hãng sản xuất, sửa chữa nhanh để không làm gián đoạn sản xuất. Có phụ tùng thay thế sẵn kho.</p>
+        <ul class="svc-card__list">
+          <li>Bảo hành chính hãng 6–24 tháng</li>
+          <li>Xử lý sự cố trong vòng 24h làm việc</li>
+          <li>Phụ tùng thay thế có sẵn, không chờ đợi</li>
+          <li>Kỹ thuật đến tận nơi trong nội thành</li>
+        </ul>
+        <a href="/lien-he" class="svc-card__link">
+          Yêu cầu bảo hành
+          <svg viewBox="0 0 24 24"><path d="M8.59 16.59L13.17 12 8.59 7.41 10 6l6 6-6 6z"/></svg>
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ③ PROCESS -->
+  <section class="svc-process">
+    <div class="svc-section">
+      <div class="svc-label">Quy trình làm việc</div>
+      <h2 class="svc-h2">Từ liên hệ đến <span>nhận máy</span></h2>
+
+      <div class="svc-process__steps">
+        <div class="step">
+          <div class="step__num">01</div>
+          <div class="step__icon">
+            <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/></svg>
+          </div>
+          <h4 class="step__title">Liên hệ &amp; Tư vấn</h4>
+          <p class="step__desc">Gọi hotline hoặc điền form. Chuyên viên tư vấn gọi lại trong 30 phút, phân tích nhu cầu và đề xuất máy phù hợp.</p>
+        </div>
+        <div class="step">
+          <div class="step__num">02</div>
+          <div class="step__icon">
+            <svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V8l-6-6zm-1 7V3.5L18.5 9H13z"/></svg>
+          </div>
+          <h4 class="step__title">Báo giá &amp; Xác nhận</h4>
+          <p class="step__desc">Nhận báo giá chi tiết kèm thông số kỹ thuật. Xác nhận đơn hàng, ký hợp đồng và thanh toán theo thỏa thuận.</p>
+        </div>
+        <div class="step">
+          <div class="step__num">03</div>
+          <div class="step__icon">
+            <svg viewBox="0 0 24 24"><path d="M20 8h-3V4H3c-1.1 0-2 .9-2 2v11h2c0 1.66 1.34 3 3 3s3-1.34 3-3h6c0 1.66 1.34 3 3 3s3-1.34 3-3h2v-5l-3-4z"/></svg>
+          </div>
+          <h4 class="step__title">Xuất kho &amp; Giao hàng</h4>
+          <p class="step__desc">Kiểm tra máy trước xuất kho, đóng gói chuyên dụng, vận chuyển đến tận địa điểm của bạn an toàn và đúng hẹn.</p>
+        </div>
+        <div class="step">
+          <div class="step__num">04</div>
+          <div class="step__icon">
+            <svg viewBox="0 0 24 24"><path d="M22.7 19l-9.1-9.1c.9-2.3.4-5-1.5-6.9-2-2-5-2.4-7.4-1.3L9 6 6 9 1.6 4.7C.4 7.1.9 10.1 2.9 12.1c1.9 1.9 4.6 2.4 6.9 1.5l9.1 9.1c.4.4 1 .4 1.4 0l2.3-2.3c.5-.4.5-1.1.1-1.4z"/></svg>
+          </div>
+          <h4 class="step__title">Lắp đặt &amp; Bàn giao</h4>
+          <p class="step__desc">Kỹ thuật viên lắp đặt, chạy thử, hướng dẫn vận hành và bàn giao bảo hành. Hỗ trợ kỹ thuật suốt thời gian sử dụng.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+
+  <!-- ⑤ CTA BANNER -->
+  <section class="svc-cta">
+    <div class="svc-cta__inner">
+      <div class="svc-cta__text">
+        <h2>Cần tư vấn chọn máy?<br>Gọi ngay – báo giá trong 30 phút</h2>
+        <p>Đội ngũ chuyên viên sẵn sàng hỗ trợ từ Thứ 2 – Thứ 6 (7:30–17:30) và Thứ 7 (7:30–12:00).</p>
+      </div>
+      <div class="svc-cta__actions">
+        <a href="tel:0901234567" class="btn-cta-white">📞 0901 234 567</a>
+        <a href="/lien-he" class="btn-cta-ghost">Gửi yêu cầu</a>
+      </div>
+    </div>
+  </section>
+
+</div>
+</body>
+</div>

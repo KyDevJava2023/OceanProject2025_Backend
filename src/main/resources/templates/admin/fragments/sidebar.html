@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<nav th:fragment="sidebar">
+    <style>
+        .sidebar {
+            width: 250px;
+            height: 100vh;
+            background: #fff;
+            position: fixed;
+            top: 0; left: 0;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 0 2rem 0 rgba(136,152,170,.15);
+            z-index: 100;
+            overflow-y: auto;
+        }
+
+        .sidebar-brand {
+            padding: 24px 20px 20px;
+            border-bottom: 1px solid #edf2f9;
+        }
+        .sidebar-brand a {
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .brand-icon {
+            width: 36px; height: 36px;
+            background: linear-gradient(135deg, #5e72e4, #825ee4);
+            border-radius: 8px;
+            display: flex; align-items: center; justify-content: center;
+            color: white; font-size: 16px;
+        }
+        .brand-text {
+            display: flex; flex-direction: column;
+        }
+        .brand-name {
+            font-size: 13px; font-weight: 700;
+            color: #32325d; letter-spacing: 0.5px;
+            line-height: 1.2;
+        }
+        .brand-sub {
+            font-size: 10px; color: #8898aa;
+            letter-spacing: 1px; text-transform: uppercase;
+        }
+
+        .sidebar-section {
+            padding: 20px 20px 0;
+        }
+        .sidebar-section-title {
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: #8898aa;
+            margin-bottom: 10px;
+            padding-left: 4px;
+        }
+
+        .nav-item {
+            list-style: none;
+            margin-bottom: 4px;
+        }
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 14px;
+            border-radius: 8px;
+            text-decoration: none;
+            color: #8898aa;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all .2s;
+        }
+        .nav-link:hover {
+            background: #f6f9fc;
+            color: #32325d;
+        }
+        .nav-link.active {
+            background: #f6f9fc;
+            color: #5e72e4;
+        }
+        .nav-link .nav-icon {
+            width: 20px;
+            text-align: center;
+            font-size: 15px;
+        }
+
+        .sidebar-divider {
+            border: none;
+            border-top: 1px solid #edf2f9;
+            margin: 16px 20px;
+        }
+
+        .sidebar-footer {
+            margin-top: auto;
+            padding: 16px 20px;
+            border-top: 1px solid #edf2f9;
+        }
+        .sidebar-footer a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: #8898aa;
+            font-size: 13px;
+            font-weight: 600;
+            padding: 8px 14px;
+            border-radius: 8px;
+            transition: all .2s;
+        }
+        .sidebar-footer a:hover {
+            background: #fff1f1;
+            color: #f5365c;
+        }
+    </style>
+
+    <div class="sidebar">
+        <div class="sidebar-brand">
+            <a th:href="@{/admin/dashboard}">
+                <div class="brand-icon"><i class="fa-solid fa-wave-square"></i></div>
+                <div class="brand-text">
+                    <span class="brand-name">Ocean Machine</span>
+                    <span class="brand-sub">Admin Panel</span>
+                </div>
+            </a>
+        </div>
+
+        <div class="sidebar-section">
+            <p class="sidebar-section-title">Menu chính</p>
+            <ul style="list-style:none; padding: 0;">
+                <li class="nav-item">
+                    <a th:href="@{/admin/dashboard}" class="nav-link">
+                        <span class="nav-icon"><i class="fa-solid fa-gauge-high" style="color:#5e72e4;"></i></span>
+                        Tổng quan
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a th:href="@{/admin/product}" class="nav-link">
+                        <span class="nav-icon"><i class="fa-solid fa-box" style="color:#fb6340;"></i></span>
+                        Sản phẩm
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <span class="nav-icon"><i class="fa-solid fa-list" style="color:#11cdef;"></i></span>
+                        Danh mục
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <span class="nav-icon"><i class="fa-solid fa-cart-shopping" style="color:#2dce89;"></i></span>
+                        Đơn hàng
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <hr class="sidebar-divider">
+
+        <div class="sidebar-section">
+            <p class="sidebar-section-title">Quản lý</p>
+            <ul style="list-style:none; padding: 0;">
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <span class="nav-icon"><i class="fa-solid fa-users" style="color:#825ee4;"></i></span>
+                        Người dùng
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <span class="nav-icon"><i class="fa-solid fa-chart-line" style="color:#ffd600;"></i></span>
+                        Báo cáo
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link">
+                        <span class="nav-icon"><i class="fa-solid fa-gear" style="color:#8898aa;"></i></span>
+                        Cài đặt
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="sidebar-footer">
+            <a th:href="@{/admin/logout}">
+                <i class="fa-solid fa-right-from-bracket"></i> Đăng xuất
+            </a>
+        </div>
+    </div>
+</nav>
+</body>
+</html>

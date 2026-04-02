@@ -17,50 +17,72 @@ import com.ocean.backend.entity.Product;
 import com.ocean.backend.entity.enums.Status;
 
 public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpecificationExecutor<Product> {
-  // featured = bestseller
-  @EntityGraph(attributePaths = { "category" })
-  List<Product> findTop3ByIsBestSellerTrueAndStatusAndDeletedAtIsNullOrderByUpdatedAtDesc(Status status);
+    // featured = bestseller
+    @EntityGraph(attributePaths = { "category" })
+    List<Product> findTop3ByIsBestSellerTrueAndStatusAndDeletedAtIsNullOrderByUpdatedAtDesc(Status status);
 
-  @Query("""
-          select coalesce(max(p.price), 0)
-          from Product p
-          where p.status = :status
-            and p.deletedAt is null
-            and p.price is not null
-      """)
-  BigDecimal findMaxPrice(@Param("status") Status status);
+    @Query("""
+                select coalesce(max(p.price), 0)
+                from Product p
+                where p.status = :status
+                  and p.deletedAt is null
+                  and p.price is not null
+            """)
+    BigDecimal findMaxPrice(@Param("status") Status status);
 
-  @Override
-  @EntityGraph(attributePaths = { "category" })
-  Page<Product> findAll(Specification<Product> spec, Pageable pageable);
+    @Override
+    @EntityGraph(attributePaths = { "category" })
+    Page<Product> findAll(Specification<Product> spec, Pageable pageable);
 
-  List<Product> findTop8ByCategory_IdAndDeletedAtIsNullAndStatusOrderByIdDesc(
-      Long categoryId, Status status);
+    List<Product> findTop8ByCategory_IdAndDeletedAtIsNullAndStatusOrderByIdDesc(
+            Long categoryId, Status status);
 
-  List<Product> findTop12ByCategory_SlugAndCategory_TypeAndDeletedAtIsNullAndStatusOrderByIdDesc(
-      String categorySlug, String categoryType, Status status);
+    List<Product> findTop12ByCategory_SlugAndCategory_TypeAndDeletedAtIsNullAndStatusOrderByIdDesc(
+            String categorySlug, String categoryType, Status status);
 
-  @EntityGraph(attributePaths = { "category" })
-  List<Product> findTop6ByIsBestSellerTrueAndStatusAndDeletedAtIsNullOrderByUpdatedAtDesc(
-      Status status);
+    @EntityGraph(attributePaths = { "category" })
+    List<Product> findTop6ByIsBestSellerTrueAndStatusAndDeletedAtIsNullOrderByUpdatedAtDesc(
+            Status status);
 
-  @Query("""
-          select p from Product p
-          join fetch p.category c
-          where p.deletedAt is null
-            and p.status = :status
-            and (:cateSlug is null or c.slug = :cateSlug)
-          order by p.createdAt desc
-      """)
-  Page<Product> findForList(
-      @Param("cateSlug") String cateSlug,
-      @Param("status") Status status,
-      Pageable pageable);
+    @Query("""
+                select p from Product p
+                join fetch p.category c
+                where p.deletedAt is null
+                  and p.status = :status
+                  and (:cateSlug is null or c.slug = :cateSlug)
+                order by p.createdAt desc
+            """)
+    Page<Product> findForList(
+            @Param("cateSlug") String cateSlug,
+            @Param("status") Status status,
+            Pageable pageable);
 
-  @EntityGraph(attributePaths = { "category" })
-  Optional<Product> findBySlugAndStatusAndDeletedAtIsNull(String slug, Status status);
+    @EntityGraph(attributePaths = { "category" })
+    Optional<Product> findBySlugAndStatusAndDeletedAtIsNull(String slug, Status status);
 
-  @EntityGraph(attributePaths = { "category" })
-  List<Product> findTop8ByCategory_IdAndIdNotAndStatusAndDeletedAtIsNullOrderByCreatedAtDesc(
-      Long categoryId, Long excludeId, Status status);
+    @EntityGraph(attributePaths = { "category" })
+    List<Product> findTop8ByCategory_IdAndIdNotAndStatusAndDeletedAtIsNullOrderByCreatedAtDesc(
+            Long categoryId, Long excludeId, Status status);
+
+    boolean existsBySlug(String slug);
+
+    boolean existsBySlugAndIdNot(String slug, Long id);
+
+    @Query("""
+                SELECT p FROM Product p
+                LEFT JOIN FETCH p.category
+                WHERE (:search IS NULL OR LOWER(p.name) LIKE LOWER(CONCAT('%', :search, '%'))
+                       OR LOWER(p.slug) LIKE LOWER(CONCAT('%', :search, '%')))
+                  AND (:status IS NULL OR p.status = :status)
+                  AND (:categoryId IS NULL OR p.category.id = :categoryId)
+                  AND (:isBestSeller IS NULL OR p.isBestSeller = :isBestSeller)
+            """)
+    Page<Product> findAllWithFilters(
+            @Param("search") String search,
+            @Param("status") Status status,
+            @Param("categoryId") Long categoryId,
+            @Param("isBestSeller") Boolean isBestSeller,
+            Pageable pageable);
+
+    void deleteAllByIdIn(List<Long> ids);
 }

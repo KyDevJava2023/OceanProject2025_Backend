@@ -2,8 +2,7 @@
 
     <!-- Single Page Header start -->
     <div class="container-fluid page-header py-5">
-        <h1 class="text-center text-white display-6"
-            th:text="${product.name}">Shop Detail</h1>
+        <h1 class="text-center text-white display-6" th:text="${product.name}">Shop Detail</h1>
         <ol class="breadcrumb justify-content-center mb-0">
             <li class="breadcrumb-item"><a th:href="@{/}">Home</a></li>
             <li class="breadcrumb-item"><a th:href="@{/san-pham}">Sản phẩm</a></li>
@@ -24,9 +23,8 @@
                         <div class="col-lg-6">
                             <div class="border rounded">
                                 <a th:href="${product.thumbnail}" target="_blank">
-                                    <img th:src="${product.thumbnail}"
-                                         class="img-fluid rounded"
-                                         th:alt="${product.name}">
+                                    <img th:src="${product.thumbnail}" class="img-fluid rounded"
+                                        th:alt="${product.name}">
                                 </a>
                             </div>
                         </div>
@@ -37,13 +35,11 @@
 
                             <p class="mb-3">
                                 Category:
-                                <a class="text-primary"
-                                   th:href="@{/san-pham(cate=${product.category.slug})}"
-                                   th:text="${product.category.name}">Vegetables</a>
+                                <a class="text-primary" th:href="@{/san-pham(cate=${product.category.slug})}"
+                                    th:text="${product.category.name}">Vegetables</a>
                             </p>
 
-                            <h5 class="fw-bold mb-3"
-                                th:text="${product.price != null
+                            <h5 class="fw-bold mb-3" th:text="${product.price != null
                                     ? #numbers.formatDecimal(product.price,0,'POINT',0,'COMMA') + ' đ'
                                     : 'Liên hệ'}">0 đ</h5>
 
@@ -57,7 +53,7 @@
                             </div>
 
                             <p class="mb-4"
-                               th:text="${product.shortDescription != null ? product.shortDescription : 'Chưa có mô tả ngắn.'}">
+                                th:text="${product.shortDescription != null ? product.shortDescription : 'Chưa có mô tả ngắn.'}">
                                 short desc
                             </p>
 
@@ -77,7 +73,7 @@
                             </div>
 
                             <a th:href="@{/lien-he(message=${'Báo giá sản phẩm: ' + product.name})}"
-                               class="btn border border-secondary rounded-pill px-4 py-2 mb-4 text-primary">
+                                class="btn border border-secondary rounded-pill px-4 py-2 mb-4 text-primary">
                                 <i class="fa fa-shopping-bag me-2 text-primary"></i> Nhận báo giá
                             </a>
                         </div>
@@ -86,24 +82,158 @@
                         <div class="col-lg-12">
                             <nav>
                                 <div class="nav nav-tabs mb-3">
-                                    <button class="nav-link active border-white border-bottom-0" type="button" role="tab"
-                                            id="nav-about-tab" data-bs-toggle="tab" data-bs-target="#nav-about"
-                                            aria-controls="nav-about" aria-selected="true">Description</button>
+                                    <button class="nav-link active border-white border-bottom-0" type="button"
+                                        role="tab" id="nav-about-tab" data-bs-toggle="tab" data-bs-target="#nav-about"
+                                        aria-controls="nav-about" aria-selected="true">Description</button>
                                     <button class="nav-link border-white border-bottom-0" type="button" role="tab"
-                                            id="nav-mission-tab" data-bs-toggle="tab" data-bs-target="#nav-mission"
-                                            aria-controls="nav-mission" aria-selected="false">Reviews</button>
+                                        id="nav-mission-tab" data-bs-toggle="tab" data-bs-target="#nav-mission"
+                                        aria-controls="nav-mission" aria-selected="false">Reviews</button>
                                 </div>
                             </nav>
 
                             <div class="tab-content mb-5">
                                 <!-- DESCRIPTION -->
-                                <div class="tab-pane active" id="nav-about" role="tabpanel" aria-labelledby="nav-about-tab">
+                                <div class="tab-pane active" id="nav-about" role="tabpanel"
+                                    aria-labelledby="nav-about-tab">
                                     <div th:if="${product.content != null}" th:utext="${product.content}"></div>
-                                    <p th:if="${product.content == null}" class="text-muted mb-0">Chưa có nội dung chi tiết.</p>
+                                    <p th:if="${product.content == null}" class="text-muted mb-0">Chưa có nội dung chi
+                                        tiết.</p>
                                 </div>
+                                <style>
+                                    #nav-about>div {
+                                        font-size: 15px;
+                                        line-height: 1.8;
+                                        color: #32325d;
+                                        word-break: break-word;
+                                    }
 
+                                    #nav-about>div img {
+                                        max-width: 100%;
+                                        height: auto;
+                                        border-radius: 8px;
+                                        display: block;
+                                        margin: 12px auto;
+                                        box-shadow: 0 2px 12px rgba(0, 0, 0, .08);
+                                    }
+
+                                    #nav-about>div figure {
+                                        margin: 16px 0;
+                                        text-align: center;
+                                    }
+
+                                    #nav-about>div figure img {
+                                        margin: 0 auto;
+                                    }
+
+                                    #nav-about>div figcaption {
+                                        font-size: 12px;
+                                        color: #8898aa;
+                                        margin-top: 6px;
+                                        font-style: italic;
+                                    }
+
+                                    #nav-about>div .table {
+                                        overflow-x: auto;
+                                        display: block;
+                                        margin: 20px 0;
+                                        border-radius: 8px;
+                                        box-shadow: 0 0 0 1px #edf2f9;
+                                    }
+
+                                    #nav-about>div table {
+                                        width: 100%;
+                                        border-collapse: collapse;
+                                        font-size: 14px;
+                                        min-width: 400px;
+                                    }
+
+                                    #nav-about>div table th {
+                                        background: #f6f9fc;
+                                        padding: 10px 14px;
+                                        font-weight: 700;
+                                        color: #32325d;
+                                        text-align: left;
+                                        border: 1px solid #edf2f9;
+                                        white-space: nowrap;
+                                    }
+
+                                    #nav-about>div table td {
+                                        padding: 10px 14px;
+                                        border: 1px solid #edf2f9;
+                                        color: #525f7f;
+                                        vertical-align: top;
+                                    }
+
+                                    #nav-about>div table tr:nth-child(even) td {
+                                        background: #f8f9fe;
+                                    }
+
+                                    #nav-about>div h2 {
+                                        font-size: 22px;
+                                        font-weight: 700;
+                                        color: #32325d;
+                                        margin: 24px 0 12px;
+                                    }
+
+                                    #nav-about>div h3 {
+                                        font-size: 18px;
+                                        font-weight: 700;
+                                        color: #32325d;
+                                        margin: 20px 0 10px;
+                                    }
+
+                                    #nav-about>div h4 {
+                                        font-size: 16px;
+                                        font-weight: 600;
+                                        color: #32325d;
+                                        margin: 16px 0 8px;
+                                    }
+
+                                    #nav-about>div p {
+                                        margin: 0 0 12px;
+                                    }
+
+                                    #nav-about>div ul,
+                                    #nav-about>div ol {
+                                        padding-left: 24px;
+                                        margin: 0 0 12px;
+                                    }
+
+                                    #nav-about>div li {
+                                        margin-bottom: 4px;
+                                    }
+
+                                    #nav-about>div blockquote {
+                                        border-left: 4px solid #5e72e4;
+                                        padding: 10px 16px;
+                                        margin: 16px 0;
+                                        background: #f0f3ff;
+                                        border-radius: 0 8px 8px 0;
+                                        color: #525f7f;
+                                        font-style: italic;
+                                    }
+
+                                    #nav-about>div pre {
+                                        background: #f6f9fc;
+                                        border-radius: 8px;
+                                        padding: 14px 16px;
+                                        overflow-x: auto;
+                                        font-size: 13px;
+                                        border: 1px solid #edf2f9;
+                                        margin: 12px 0;
+                                    }
+
+                                    #nav-about>div code {
+                                        background: #eef0fd;
+                                        padding: 2px 6px;
+                                        border-radius: 4px;
+                                        font-size: 12px;
+                                        color: #5e72e4;
+                                    }
+                                </style>
                                 <!-- REVIEWS placeholder -->
-                                <div class="tab-pane" id="nav-mission" role="tabpanel" aria-labelledby="nav-mission-tab">
+                                <div class="tab-pane" id="nav-mission" role="tabpanel"
+                                    aria-labelledby="nav-mission-tab">
                                     <p class="text-muted mb-0">Chức năng đánh giá sẽ cập nhật sau.</p>
                                 </div>
                             </div>
@@ -126,7 +256,7 @@
                                 <div class="col-lg-12">
                                     <div class="border-bottom rounded my-4">
                                         <textarea class="form-control border-0" cols="30" rows="8"
-                                                  placeholder="Your Review *" spellcheck="false"></textarea>
+                                            placeholder="Your Review *" spellcheck="false"></textarea>
                                     </div>
                                 </div>
                                 <div class="col-lg-12">
@@ -141,7 +271,8 @@
                                                 <i class="fa fa-star"></i>
                                             </div>
                                         </div>
-                                        <a href="#" class="btn border border-secondary text-primary rounded-pill px-4 py-3">
+                                        <a href="#"
+                                            class="btn border border-secondary text-primary rounded-pill px-4 py-3">
                                             Post Comment
                                         </a>
                                     </div>
@@ -160,8 +291,8 @@
                         <div class="col-lg-12">
                             <form th:action="@{/san-pham}" method="get">
                                 <div class="input-group w-100 mx-auto d-flex mb-4">
-                                    <input type="search" name="q" class="form-control p-3"
-                                           placeholder="keywords" aria-describedby="search-icon-1">
+                                    <input type="search" name="q" class="form-control p-3" placeholder="keywords"
+                                        aria-describedby="search-icon-1">
                                     <button class="input-group-text p-3" id="search-icon-1" type="submit">
                                         <i class="fa fa-search"></i>
                                     </button>
@@ -175,7 +306,7 @@
                                     <li th:each="c : ${categoryCounts}">
                                         <div class="d-flex justify-content-between fruite-name">
                                             <a th:href="@{/san-pham(cate=${c.slug})}"
-                                               th:classappend="${c.slug == product.category.slug} ? 'text-primary fw-bold' : ''">
+                                                th:classappend="${c.slug == product.category.slug} ? 'text-primary fw-bold' : ''">
                                                 <i class="fas fa-apple-alt me-2"></i>
                                                 <span th:text="${c.name}">Cate</span>
                                             </a>
@@ -191,10 +322,9 @@
                             <h4 class="mb-4">Featured products</h4>
 
                             <div class="d-flex align-items-center justify-content-start mb-3"
-                                 th:each="fp : ${featuredProducts}">
+                                th:each="fp : ${featuredProducts}">
                                 <div class="rounded me-3" style="width: 100px; height: 100px;">
-                                    <img th:src="${fp.thumbnail}" class="img-fluid rounded"
-                                         th:alt="${fp.name}">
+                                    <img th:src="${fp.thumbnail}" class="img-fluid rounded" th:alt="${fp.name}">
                                 </div>
                                 <div>
                                     <a th:href="@{'/san-pham/' + ${fp.slug}}">
@@ -208,8 +338,7 @@
                                         <i class="fa fa-star"></i>
                                     </div>
                                     <div class="d-flex mb-2">
-                                        <h5 class="fw-bold me-2"
-                                            th:text="${fp.price != null
+                                        <h5 class="fw-bold me-2" th:text="${fp.price != null
                                                 ? #numbers.formatDecimal(fp.price,0,'POINT',0,'COMMA') + ' đ'
                                                 : 'Liên hệ'}">0 đ</h5>
                                     </div>
@@ -218,7 +347,7 @@
 
                             <div class="d-flex justify-content-center my-4">
                                 <a th:href="@{/san-pham}"
-                                   class="btn border border-secondary px-4 py-3 rounded-pill text-primary w-100">
+                                    class="btn border border-secondary px-4 py-3 rounded-pill text-primary w-100">
                                     View More
                                 </a>
                             </div>
@@ -233,14 +362,12 @@
             <div class="vesitable">
                 <div class="owl-carousel vegetable-carousel justify-content-center">
                     <div class="border border-primary rounded position-relative vesitable-item"
-                         th:each="rp : ${relatedProducts}">
+                        th:each="rp : ${relatedProducts}">
                         <div class="vesitable-img">
-                            <img th:src="${rp.thumbnail}" class="img-fluid w-100 rounded-top"
-                                 th:alt="${rp.name}">
+                            <img th:src="${rp.thumbnail}" class="img-fluid w-100 rounded-top" th:alt="${rp.name}">
                         </div>
                         <div class="text-white bg-primary px-3 py-1 rounded position-absolute"
-                             style="top: 10px; right: 10px;"
-                             th:text="${rp.category.name}">
+                            style="top: 10px; right: 10px;" th:text="${rp.category.name}">
                             Category
                         </div>
                         <div class="p-4 pb-0 rounded-bottom">
@@ -251,12 +378,11 @@
                                 short
                             </p>
                             <div class="d-flex justify-content-between flex-lg-wrap">
-                                <p class="text-dark fs-5 fw-bold"
-                                   th:text="${rp.price != null
+                                <p class="text-dark fs-5 fw-bold" th:text="${rp.price != null
                                        ? #numbers.formatDecimal(rp.price,0,'POINT',0,'COMMA') + ' đ'
                                        : 'Liên hệ'}">$0</p>
                                 <a th:href="@{'/san-pham/' + ${rp.slug}}"
-                                   class="btn border border-secondary rounded-pill px-3 py-1 mb-4 text-primary">
+                                    class="btn border border-secondary rounded-pill px-3 py-1 mb-4 text-primary">
                                     <i class="fa fa-eye me-2 text-primary"></i> Xem
                                 </a>
                             </div>

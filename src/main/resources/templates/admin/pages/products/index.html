@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org" layout:decorate="~{admin/layout/layout}">
+<head><title>Quản Lý Sản Phẩm</title></head>
+<body>
+    <div layout:fragment="page-title">QUẢN LÝ SẢN PHẨM & DANH MỤC</div>
+    <div layout:fragment="content">
+        <div th:replace="~{admin/fragments/products/_table :: table}"></div>
+        <div th:replace="~{admin/fragments/products/_modal :: modal}"></div>
+    </div>
+    <th:block layout:fragment="scripts">
+        <div th:replace="~{admin/fragments/products/_script :: script}"></div>
+    </th:block>
+</body>
+</html>

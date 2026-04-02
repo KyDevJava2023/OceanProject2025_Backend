@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<th:block th:fragment="script">
+<script>
+const API_PRODUCTS   = '/api/admin/products';
+const API_CATEGORIES = '/api/admin/categories';
+
+const pState = { page:0, size:10, sort:'id', dir:'asc', search:'', status:'', categoryId:'', isBestSeller:'' };
+const cState = { page:0, size:15, sort:'name', dir:'asc', search:'', type:'', status:'' };
+
+let deleteTarget  = { id:null, name:'', type:'' };
+let allCategories = [];
+let activeTab     = 'product';
+
+// ═══════════════════════════════════════════════════
+// CSRF
+// ═══════════════════════════════════════════════════
+function _getCsrf() {
+    return {
+        token:  document.querySelector('meta[name="_csrf"]')?.content || '',
+        header: document.querySelector('meta[name="_csrf_header"]')?.content || 'X-CSRF-TOKEN',
+    };
+}
+
+// ═══════════════════════════════════════════════════
+// CKEDITOR
+// ═══════════════════════════════════════════════════
+let _ckInstance    = null;
+let _ckUploadCount = 0;
+
+class CkUploadAdapter {
+    constructor(loader) { this.loader = loader; this.controller = new AbortController(); }
+
+    upload() {
+        _ckUploadCount++;
+        _updateSaveLock();
+        return this.loader.file.then(file => {
+            const fd = new FormData();
+            fd.append('upload', file);
+            const { token, header } = _getCsrf();
+            return fetch('/admin/uploads/ckeditor', {
+                method: 'POST', headers: { [header]: token },
+                body: fd, credentials: 'same-origin', signal: this.controller.signal,
+            })
+            .then(async res => {
+                const data = await res.json();
+                if (!res.ok || !data.url) throw new Error(data.message || 'Upload thất bại');
+                return { default: data.url };
+            })
+            .finally(() => { _ckUploadCount = Math.max(0, _ckUploadCount - 1); _updateSaveLock(); });
+        })
+        .catch(err => { _ckUploadCount = Math.max(0, _ckUploadCount - 1); _updateSaveLock(); throw err; });
+    }
+
+    abort() { _ckUploadCount = Math.max(0, _ckUploadCount - 1); _updateSaveLock(); this.controller.abort(); }
+}
+
+function _updateSaveLock() {
+    const btn = document.getElementById('productSaveBtn');
+    const lbl = document.getElementById('productSaveLbl');
+    const bar = document.getElementById('ckUploadStatus');
+    const txt = document.getElementById('ckUploadStatusText');
+    if (_ckUploadCount > 0) {
+        if (btn) btn.disabled = true;
+        if (lbl) lbl.textContent = `Đang upload (${_ckUploadCount})...`;
+        if (bar) bar.classList.add('show');
+        if (txt) txt.textContent = `Đang upload ${_ckUploadCount} ảnh, vui lòng chờ...`;
+    } else {
+        if (btn) btn.disabled = false;
+        const isEdit = !!document.getElementById('productId')?.value;
+        if (lbl) lbl.textContent = isEdit ? 'Cập nhật' : 'Lưu sản phẩm';
+        if (bar) bar.classList.remove('show');
+    }
+}
+
+function _initCkEditor(callback) {
+    if (_ckInstance) { if (callback) callback(_ckInstance); return; }
+    const textarea = document.getElementById('productContentEditor');
+    if (!textarea || !window.ClassicEditor) { console.warn('CKEditor chưa load'); return; }
+
+    ClassicEditor.create(textarea, {
+        toolbar: [
+            'heading','|','fontSize','fontFamily','fontColor','fontBackgroundColor','|',
+            'bold','italic','underline','strikethrough','|','alignment','|',
+            'bulletedList','numberedList','outdent','indent','|',
+            'link','imageUpload','blockQuote','insertTable','mediaEmbed','|','undo','redo'
+        ],
+        image: { toolbar: ['imageStyle:inline','imageStyle:alignCenter','imageStyle:side','|','toggleImageCaption','imageTextAlternative'] },
+        language: 'vi',
+    })
+    .then(editor => {
+        editor.plugins.get('FileRepository').createUploadAdapter = loader => new CkUploadAdapter(loader);
+        _ckInstance = editor;
+        const pending = textarea.dataset.pending;
+        if (pending !== undefined) { editor.setData(pending); delete textarea.dataset.pending; }
+        if (callback) callback(editor);
+    })
+    .catch(err => console.error('CKEditor error:', err));
+}
+
+// ═══════════════════════════════════════════════════
+// MODAL TAB SWITCH
+// ═══════════════════════════════════════════════════
+function switchModalTab(tab, btn) {
+    document.querySelectorAll('.modal-tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.modal-tab-panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('modalTab' + tab.charAt(0).toUpperCase() + tab.slice(1))?.classList.add('active');
+    if (tab === 'content') _initCkEditor();
+}
+
+// ═══════════════════════════════════════════════════
+// THUMBNAIL UPLOAD
+// ═══════════════════════════════════════════════════
+function uploadThumbnail(input) {
+    const file = input.files[0];
+    if (!file) return;
+
+    // Validate size (5MB)
+    if (file.size > 5 * 1024 * 1024) {
+        setThumbHint('error', '❌ File quá lớn! Tối đa 5MB.');
+        input.value = '';
+        return;
+    }
+
+    // Preview local ngay lập tức
+    const reader = new FileReader();
+    reader.onload = e => {
+        document.getElementById('thumbPreviewImg').src = e.target.result;
+        showThumbPreview(true);
+        setThumbHint('uploading', '⏳ Đang upload lên Cloudinary...');
+
+        // Disable nút Lưu trong lúc upload thumbnail
+        const btn = document.getElementById('productSaveBtn');
+        if (btn) btn.disabled = true;
+    };
+    reader.readAsDataURL(file);
+
+    // Upload lên Cloudinary
+    const fd = new FormData();
+    fd.append('file', file);
+    const { token, header } = _getCsrf();
+
+    fetch('/admin/uploads/thumbnail', {
+        method: 'POST',
+        headers: { [header]: token },
+        body: fd,
+        credentials: 'same-origin',
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (!data.url) throw new Error('Không nhận được URL');
+        document.getElementById('productThumb').value    = data.url;
+        document.getElementById('thumbPreviewImg').src   = data.url;
+        setThumbHint('success', '✅ Upload thành công!');
+    })
+    .catch(err => {
+        setThumbHint('error', '❌ Upload thất bại: ' + err.message);
+        // Xóa preview khi lỗi
+        document.getElementById('productThumb').value = '';
+        showThumbPreview(false);
+    })
+    .finally(() => {
+        // Re-enable nút lưu (CKEditor lock sẽ tự quản lý riêng)
+        _updateSaveLock();
+        input.value = '';
+    });
+}
+
+function removeThumbnail() {
+    document.getElementById('productThumb').value      = '';
+    document.getElementById('thumbPreviewImg').src     = '';
+    document.getElementById('thumbFileInput').value    = '';
+    showThumbPreview(false);
+    setThumbHint('', '');
+}
+
+function showThumbPreview(show) {
+    document.getElementById('thumbPreviewContainer').classList.toggle('show', show);
+    document.getElementById('thumbUploadArea').style.display = show ? 'none' : 'flex';
+}
+
+function setThumbHint(type, msg) {
+    const el = document.getElementById('thumbUploadHint');
+    if (!el) return;
+    el.className = 'thumb-upload-hint' + (type ? ' ' + type : '');
+    el.textContent = msg;
+}
+
+// Set thumbnail từ URL (dùng khi edit — thumbnail đã có sẵn URL)
+function setThumbFromUrl(url) {
+    if (url) {
+        document.getElementById('productThumb').value    = url;
+        document.getElementById('thumbPreviewImg').src   = url;
+        showThumbPreview(true);
+        setThumbHint('', '');
+    } else {
+        removeThumbnail();
+    }
+}
+
+// ═══════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════
+async function initPage() {
+    await loadCategories();
+    loadProducts();
+    loadCategoryTable();
+    bindEvents();
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initPage);
+} else {
+    initPage();
+}
+
+function bindEvents() {
+    document.getElementById('productSlug')?.addEventListener('input', function() {
+        this.dataset.manual = 'true';
+        this.value = toSlug(this.value);
+    });
+
+    // Drag & drop cho thumbnail
+    const uploadArea = document.getElementById('thumbUploadArea');
+    if (uploadArea) {
+        uploadArea.addEventListener('dragover', e => { e.preventDefault(); uploadArea.style.borderColor = '#5e72e4'; });
+        uploadArea.addEventListener('dragleave', () => { uploadArea.style.borderColor = ''; });
+        uploadArea.addEventListener('drop', e => {
+            e.preventDefault();
+            uploadArea.style.borderColor = '';
+            const file = e.dataTransfer.files[0];
+            if (file && file.type.startsWith('image/')) {
+                const input = document.getElementById('thumbFileInput');
+                const dt = new DataTransfer();
+                dt.items.add(file);
+                input.files = dt.files;
+                uploadThumbnail(input);
+            }
+        });
+    }
+
+    let pTimer;
+    document.getElementById('p-search')?.addEventListener('input', e => {
+        clearTimeout(pTimer);
+        pTimer = setTimeout(() => { pState.search = e.target.value.trim(); pState.page = 0; loadProducts(); }, 400);
+    });
+    document.getElementById('p-filterStatus')?.addEventListener('change', e => { pState.status = e.target.value; pState.page = 0; loadProducts(); });
+    document.getElementById('p-filterCat')?.addEventListener('change', e => { pState.categoryId = e.target.value; pState.page = 0; loadProducts(); });
+    document.getElementById('p-filterBest')?.addEventListener('change', e => { pState.isBestSeller = e.target.value; pState.page = 0; loadProducts(); });
+
+    let cTimer;
+    document.getElementById('c-search')?.addEventListener('input', e => {
+        clearTimeout(cTimer);
+        cTimer = setTimeout(() => { cState.search = e.target.value.trim(); cState.page = 0; loadCategoryTable(); }, 400);
+    });
+    document.getElementById('c-filterType')?.addEventListener('change', e => { cState.type = e.target.value; cState.page = 0; loadCategoryTable(); });
+    document.getElementById('c-filterStatus')?.addEventListener('change', e => { cState.status = e.target.value; cState.page = 0; loadCategoryTable(); });
+}
+
+// ═══════════════════════════════════════════════════
+// TAB PAGE
+// ═══════════════════════════════════════════════════
+function switchTab(tab) {
+    activeTab = tab;
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.getElementById('tab-' + tab).classList.add('active');
+    document.getElementById('panel-' + tab).classList.add('active');
+}
+
+// ═══════════════════════════════════════════════════
+// LOAD CATEGORIES
+// ═══════════════════════════════════════════════════
+async function loadCategories() {
+    try {
+        const res     = await fetch(`${API_CATEGORIES}/all`);
+        allCategories = await res.json();
+        const sel    = document.getElementById('productCategory');
+        const filter = document.getElementById('p-filterCat');
+        if (sel)    sel.innerHTML    = '<option value="">-- Chọn danh mục --</option>';
+        if (filter) filter.innerHTML = '<option value="">Tất cả danh mục</option>';
+        allCategories.forEach(c => {
+            if (sel)    sel.innerHTML    += `<option value="${c.id}">${escHtml(c.name)}</option>`;
+            if (filter) filter.innerHTML += `<option value="${c.id}">${escHtml(c.name)}</option>`;
+        });
+    } catch(e) { console.error('loadCategories error:', e); }
+}
+
+// ═══════════════════════════════════════════════════
+// PRODUCT TABLE
+// ═══════════════════════════════════════════════════
+async function loadProducts() {
+    const body = document.getElementById('p-tbody');
+    body.innerHTML = `<tr><td colspan="8" class="table-loading"><i class="fa-solid fa-spinner fa-spin"></i> Đang tải...</td></tr>`;
+    const params = new URLSearchParams({
+        page: pState.page, size: pState.size, sort: `${pState.sort},${pState.dir}`,
+        ...(pState.search       && { search:       pState.search }),
+        ...(pState.status       && { status:       pState.status }),
+        ...(pState.categoryId   && { categoryId:   pState.categoryId }),
+        ...(pState.isBestSeller !== '' && { isBestSeller: pState.isBestSeller }),
+    });
+    try {
+        const res  = await fetch(`${API_PRODUCTS}?${params}`);
+        const data = await res.json();
+        renderProductTable(data.content || []);
+        renderPagination('p', data, goProductPage);
+        const total = data.totalElements ?? 0;
+        document.getElementById('p-totalCount').textContent = `Tổng: ${total} sản phẩm`;
+        document.getElementById('tc-product').textContent   = total;
+        document.getElementById('p-checkAll').checked       = false;
+        updateBulkBar();
+    } catch {
+        body.innerHTML = `<tr><td colspan="8" class="table-loading" style="color:#f5365c;"><i class="fa-solid fa-circle-exclamation"></i> Lỗi tải dữ liệu</td></tr>`;
+    }
+}
+
+function renderProductTable(products) {
+    const body = document.getElementById('p-tbody');
+    if (!products.length) {
+        body.innerHTML = `<tr><td colspan="8"><div class="empty-state"><i class="fa-solid fa-box-open"></i><p>Không có sản phẩm</p></div></td></tr>`;
+        return;
+    }
+    const statusMap = { ACTIVE:'badge-active', INACTIVE:'badge-inactive', DRAFT:'badge-draft' };
+    const statusLbl = { ACTIVE:'Đang bán', INACTIVE:'Ngừng bán', DRAFT:'Nháp' };
+    body.innerHTML = products.map(p => {
+        const thumb = p.thumbnail
+            ? `<img src="${escHtml(p.thumbnail)}" class="product-thumb" alt="" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"><div class="thumb-placeholder" style="display:none"><i class="fa-regular fa-image"></i></div>`
+            : `<div class="thumb-placeholder"><i class="fa-regular fa-image"></i></div>`;
+        const sBadge = `<span class="badge ${statusMap[p.status]||'badge-draft'}">${statusLbl[p.status]||p.status}</span>`;
+        const best   = p.isBestSeller ? `<span class="badge badge-star"><i class="fa-solid fa-star"></i></span>` : `<span style="color:#dee2e6">—</span>`;
+        return `<tr>
+            <td><input type="checkbox" class="row-check" value="${p.id}" onchange="updateBulkBar()"></td>
+            <td>${thumb}</td>
+            <td><div class="product-name">${escHtml(p.name)}</div><div class="product-slug">${escHtml(p.slug||'')}</div></td>
+            <td>${p.price != null ? fmtPrice(p.price) : '—'}</td>
+            <td>${escHtml(p.categoryName||'—')}</td>
+            <td>${sBadge}</td>
+            <td>${best}</td>
+            <td><div class="action-btns">
+                <button class="btn btn-warning btn-sm btn-icon" onclick="openEditModal(${p.id})"><i class="fa-solid fa-pen"></i></button>
+                <button class="btn btn-danger btn-sm btn-icon" onclick="openDeleteModal(${p.id},'${escJs(p.name)}','product')"><i class="fa-solid fa-trash"></i></button>
+            </div></td>
+        </tr>`;
+    }).join('');
+}
+
+function pSortBy(col) {
+    pState.dir = pState.sort === col && pState.dir === 'asc' ? 'desc' : 'asc';
+    pState.sort = col; pState.page = 0;
+    updateSortIcons('p', col, pState.dir); loadProducts();
+}
+function goProductPage(p) { pState.page = p; loadProducts(); window.scrollTo({top:0,behavior:'smooth'}); }
+function toggleCheckAll(el) { document.querySelectorAll('.row-check').forEach(c => c.checked = el.checked); updateBulkBar(); }
+function updateBulkBar() {
+    const n = document.querySelectorAll('.row-check:checked').length;
+    document.getElementById('p-bulkCount').textContent = n;
+    document.getElementById('p-bulkBar').classList.toggle('show', n > 0);
+}
+async function bulkDeleteProducts() {
+    const ids = [...document.querySelectorAll('.row-check:checked')].map(c => Number(c.value));
+    if (!ids.length) return;
+    if (!confirm(`Xóa ${ids.length} sản phẩm?`)) return;
+    try {
+        await fetch(`${API_PRODUCTS}/bulk-delete`, { method:'DELETE', headers:{'Content-Type':'application/json'}, body:JSON.stringify(ids) });
+        showToast('success', `Đã xóa ${ids.length} sản phẩm`); loadProducts();
+    } catch { showToast('error', 'Xóa thất bại!'); }
+}
+
+// ═══════════════════════════════════════════════════
+// MODAL PRODUCT
+// ═══════════════════════════════════════════════════
+function openAddModal() {
+    document.getElementById('modalTitle').textContent = 'Thêm sản phẩm mới';
+    resetProductForm();
+    switchModalTab('info', document.getElementById('mtab-info'));
+    showOverlay('productOverlay');
+}
+
+async function openEditModal(id) {
+    document.getElementById('modalTitle').textContent = 'Cập nhật sản phẩm';
+    resetProductForm();
+    switchModalTab('info', document.getElementById('mtab-info'));
+    try {
+        const p = await fetch(`${API_PRODUCTS}/${id}`).then(r => r.json());
+        document.getElementById('productId').value       = p.id;
+        document.getElementById('productName').value     = p.name || '';
+        document.getElementById('productSlug').value     = p.slug || '';
+        document.getElementById('productPrice').value    = p.price || '';
+        document.getElementById('productStatus').value   = p.status || 'ACTIVE';
+        document.getElementById('productBest').value     = p.isBestSeller ? 'true' : 'false';
+        document.getElementById('productDesc').value     = p.shortDescription || '';
+        document.getElementById('productCategory').value = p.categoryId || '';
+
+        // Thumbnail
+        setThumbFromUrl(p.thumbnail || '');
+        _updateSaveLock();
+
+        // CKEditor content
+        if (_ckInstance) {
+            _ckInstance.setData(p.content || '');
+        } else {
+            const ta = document.getElementById('productContentEditor');
+            if (ta) ta.dataset.pending = p.content || '';
+        }
+
+        showOverlay('productOverlay');
+    } catch { showToast('error', 'Không tải được dữ liệu!'); }
+}
+
+async function saveProduct() {
+    if (_ckUploadCount > 0) return showToast('warning', `Chờ ${_ckUploadCount} ảnh upload xong!`);
+
+    const id    = document.getElementById('productId').value;
+    const name  = document.getElementById('productName').value.trim();
+    const slug  = document.getElementById('productSlug').value.trim();
+    const price = parseFloat(document.getElementById('productPrice').value);
+    const catId = document.getElementById('productCategory').value;
+
+    if (!name)        return showToast('warning', 'Vui lòng nhập tên sản phẩm!');
+    if (!slug)        return showToast('warning', 'Vui lòng nhập slug!');
+    if (isNaN(price)) return showToast('warning', 'Vui lòng nhập giá hợp lệ!');
+    if (!catId)       return showToast('warning', 'Vui lòng chọn danh mục!');
+
+    const payload = {
+        name, slug, price,
+        content:          _ckInstance ? _ckInstance.getData() : '',
+        status:           document.getElementById('productStatus').value,
+        isBestSeller:     document.getElementById('productBest').value === 'true',
+        shortDescription: document.getElementById('productDesc').value.trim(),
+        thumbnail:        document.getElementById('productThumb').value.trim(),
+        categoryId:       Number(catId),
+    };
+    const isEdit = !!id;
+    try {
+        const res = await fetch(isEdit ? `${API_PRODUCTS}/${id}` : API_PRODUCTS, {
+            method: isEdit ? 'PUT' : 'POST',
+            headers: {'Content-Type':'application/json'},
+            body: JSON.stringify(payload),
+        });
+        if (!res.ok) { const err = await res.json(); throw new Error(err.message || 'Lỗi'); }
+        showToast('success', isEdit ? 'Cập nhật thành công!' : 'Thêm thành công!');
+        closeProductModal(); loadProducts();
+    } catch(e) { showToast('error', e.message || 'Lưu thất bại!'); }
+}
+
+function closeProductModal() {
+    hideOverlay('productOverlay');
+    _ckUploadCount = 0; _updateSaveLock();
+}
+
+function resetProductForm() {
+    ['productId','productName','productSlug','productPrice','productDesc'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) { el.value = ''; if (el.dataset) el.dataset.manual = ''; }
+    });
+    document.getElementById('productStatus').value   = 'ACTIVE';
+    document.getElementById('productBest').value     = 'false';
+    document.getElementById('productCategory').value = '';
+    removeThumbnail();
+    if (_ckInstance) _ckInstance.setData('');
+    else {
+        const ta = document.getElementById('productContentEditor');
+        if (ta) { ta.value = ''; delete ta.dataset.pending; }
+    }
+    _ckUploadCount = 0; _updateSaveLock();
+}
+
+// ═══════════════════════════════════════════════════
+// CATEGORY TABLE (inline edit)
+// ═══════════════════════════════════════════════════
+async function loadCategoryTable() {
+    const body = document.getElementById('c-tbody');
+    body.innerHTML = `<tr><td colspan="6" class="table-loading"><i class="fa-solid fa-spinner fa-spin"></i> Đang tải...</td></tr>`;
+    const params = new URLSearchParams({
+        page: cState.page, size: cState.size, sort: `${cState.sort},${cState.dir}`,
+        ...(cState.search && { search: cState.search }),
+        ...(cState.type   && { type:   cState.type }),
+        ...(cState.status && { status: cState.status }),
+    });
+    try {
+        const res  = await fetch(`${API_CATEGORIES}?${params}`);
+        const data = await res.json();
+        renderCategoryTable(data.content || []);
+        renderPagination('c', data, goCategoryPage);
+        const total = data.totalElements ?? 0;
+        document.getElementById('c-totalCount').textContent = `Tổng: ${total} danh mục`;
+        document.getElementById('tc-category').textContent  = total;
+    } catch {
+        body.innerHTML = `<tr><td colspan="6" class="table-loading" style="color:#f5365c;"><i class="fa-solid fa-circle-exclamation"></i> Lỗi tải dữ liệu</td></tr>`;
+    }
+}
+
+function renderCategoryTable(cats) {
+    const body = document.getElementById('c-tbody');
+    if (!cats.length) {
+        body.innerHTML = `<tr><td colspan="6"><div class="empty-state"><i class="fa-solid fa-folder-open"></i><p>Không có danh mục</p></div></td></tr>`;
+        return;
+    }
+    body.innerHTML = cats.map(c => buildCategoryRow(c)).join('');
+}
+
+function buildCategoryRow(c) {
+    const statusMap = { ACTIVE:'badge-active', INACTIVE:'badge-inactive', DRAFT:'badge-draft' };
+    const statusLbl = { ACTIVE:'Hoạt động', INACTIVE:'Ẩn', DRAFT:'Nháp' };
+    return `<tr data-id="${c.id}" data-name="${escHtml(c.name)}" data-slug="${escHtml(c.slug||'')}" data-type="${escHtml(c.type||'PRODUCT')}" data-status="${c.status||'ACTIVE'}" data-parent="${c.parentId||''}">
+        <td>
+            <div class="cat-view">${escHtml(c.name)}</div>
+            <div class="cat-edit"><input class="inline-input" id="ci-name-${c.id}" value="${escHtml(c.name)}" oninput="catAutoSlug(${c.id},this.value)" placeholder="Tên danh mục"></div>
+        </td>
+        <td>
+            <div class="cat-view"><span style="font-size:12px;color:#adb5bd;">${escHtml(c.slug||'')}</span></div>
+            <div class="cat-edit"><input class="inline-input" id="ci-slug-${c.id}" value="${escHtml(c.slug||'')}" placeholder="slug"></div>
+        </td>
+        <td>
+            <div class="cat-view"><span class="badge" style="background:#eef0fd;color:#4a5fd4;">${escHtml(c.type||'')}</span></div>
+            <div class="cat-edit">
+                <select class="inline-select" id="ci-type-${c.id}">
+                    <option value="PRODUCT" ${c.type==='PRODUCT'?'selected':''}>Sản phẩm</option>
+                    <option value="POST"    ${c.type==='POST'?'selected':''}>Bài viết</option>
+                    <option value="SERVICE" ${c.type==='SERVICE'?'selected':''}>Dịch vụ</option>
+                </select>
+            </div>
+        </td>
+        <td>
+            <div class="cat-view">${escHtml(c.parentName||'—')}</div>
+            <div class="cat-edit"><select class="inline-select" id="ci-parent-${c.id}"><option value="">-- Không có --</option></select></div>
+        </td>
+        <td>
+            <div class="cat-view"><span class="badge ${statusMap[c.status]||'badge-draft'}">${statusLbl[c.status]||c.status}</span></div>
+            <div class="cat-edit">
+                <select class="inline-select" id="ci-status-${c.id}">
+                    <option value="ACTIVE"   ${c.status==='ACTIVE'?'selected':''}>Hoạt động</option>
+                    <option value="INACTIVE" ${c.status==='INACTIVE'?'selected':''}>Ẩn</option>
+                    <option value="DRAFT"    ${c.status==='DRAFT'?'selected':''}>Nháp</option>
+                </select>
+            </div>
+        </td>
+        <td>
+            <div class="cat-view action-btns">
+                <button class="edit-row-btn" onclick="startEditRow(this,${c.id})"><i class="fa-solid fa-pen"></i></button>
+                <button class="del-row-btn"  onclick="openDeleteModal(${c.id},'${escJs(c.name)}','category')"><i class="fa-solid fa-trash"></i></button>
+            </div>
+            <div class="cat-edit action-btns">
+                <button class="save-btn"   onclick="saveCategoryRow(this,${c.id})"><i class="fa-solid fa-check"></i></button>
+                <button class="cancel-btn" onclick="cancelEditRow(this,${c.id})"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+        </td>
+    </tr>`;
+}
+
+async function startEditRow(btn, id) {
+    const row = btn.closest('tr');
+    if (!row) return;
+    if (!allCategories.length) await loadCategories();
+    const parentSel = document.getElementById(`ci-parent-${id}`);
+    if (parentSel) {
+        parentSel.innerHTML = '<option value="">-- Không có --</option>'
+            + allCategories.filter(c => String(c.id) !== String(id))
+                .map(c => `<option value="${c.id}" ${row.dataset.parent === String(c.id) ? 'selected' : ''}>${escHtml(c.name)}</option>`)
+                .join('');
+    }
+    row.classList.add('editing');
+}
+
+function cancelEditRow(btn, id) {
+    const row = btn.closest('tr');
+    if (!row) return;
+    if (row.dataset.new) { row.remove(); return; }
+    row.classList.remove('editing');
+    document.getElementById(`ci-name-${id}`).value   = row.dataset.name   || '';
+    document.getElementById(`ci-slug-${id}`).value   = row.dataset.slug   || '';
+    document.getElementById(`ci-type-${id}`).value   = row.dataset.type   || 'PRODUCT';
+    document.getElementById(`ci-status-${id}`).value = row.dataset.status || 'ACTIVE';
+    document.getElementById(`ci-parent-${id}`).value = row.dataset.parent || '';
+}
+
+async function saveCategoryRow(btn, id) {
+    const row   = btn.closest('tr');
+    const isNew = row?.dataset.new === 'true';
+    const name   = document.getElementById(`ci-name-${id}`)?.value.trim();
+    const slug   = document.getElementById(`ci-slug-${id}`)?.value.trim();
+    const type   = document.getElementById(`ci-type-${id}`)?.value;
+    const status = document.getElementById(`ci-status-${id}`)?.value;
+    const parent = document.getElementById(`ci-parent-${id}`)?.value;
+    if (!name) return showToast('warning', 'Tên danh mục không được để trống!');
+    if (!slug) return showToast('warning', 'Slug không được để trống!');
+    const payload = { name, slug, type, status, parentId: parent ? Number(parent) : null };
+    try {
+        const res = await fetch(isNew ? API_CATEGORIES : `${API_CATEGORIES}/${id}`, {
+            method: isNew ? 'POST' : 'PUT',
+            headers: {'Content-Type':'application/json'},
+            body: JSON.stringify(payload),
+        });
+        if (!res.ok) { const err = await res.json(); throw new Error(err.message || 'Lỗi'); }
+        showToast('success', isNew ? 'Thêm thành công!' : 'Cập nhật thành công!');
+        await loadCategories(); loadCategoryTable();
+    } catch(e) { showToast('error', e.message || 'Lưu thất bại!'); }
+}
+
+function addCategoryRow() {
+    if (activeTab !== 'category') switchTab('category');
+    const tempId = 'new-' + Date.now();
+    const newRow = document.createElement('tr');
+    newRow.dataset.new = 'true';
+    newRow.classList.add('editing', 'new-row');
+    const parentOptions = allCategories.map(c => `<option value="${c.id}">${escHtml(c.name)}</option>`).join('');
+    newRow.innerHTML = `
+        <td><div class="cat-edit"><input class="inline-input" id="ci-name-${tempId}" placeholder="Tên danh mục" oninput="catAutoSlug('${tempId}',this.value)"></div></td>
+        <td><div class="cat-edit"><input class="inline-input" id="ci-slug-${tempId}" placeholder="slug"></div></td>
+        <td><div class="cat-edit"><select class="inline-select" id="ci-type-${tempId}"><option value="PRODUCT">Sản phẩm</option><option value="POST">Bài viết</option><option value="SERVICE">Dịch vụ</option></select></div></td>
+        <td><div class="cat-edit"><select class="inline-select" id="ci-parent-${tempId}"><option value="">-- Không có --</option>${parentOptions}</select></div></td>
+        <td><div class="cat-edit"><select class="inline-select" id="ci-status-${tempId}"><option value="ACTIVE">Hoạt động</option><option value="INACTIVE">Ẩn</option><option value="DRAFT">Nháp</option></select></div></td>
+        <td><div class="cat-edit action-btns">
+            <button class="save-btn" onclick="saveCategoryRow(this,'${tempId}')"><i class="fa-solid fa-check"></i></button>
+            <button class="cancel-btn" onclick="cancelEditRow(this,'${tempId}')"><i class="fa-solid fa-xmark"></i></button>
+        </div></td>`;
+    const tbody = document.getElementById('c-tbody');
+    tbody.insertBefore(newRow, tbody.firstChild);
+    document.getElementById(`ci-name-${tempId}`)?.focus();
+}
+
+function catAutoSlug(id, val) {
+    const el = document.getElementById(`ci-slug-${id}`);
+    if (el && !el.dataset.manual) el.value = toSlug(val);
+}
+function cSortBy(col) {
+    cState.dir = cState.sort === col && cState.dir === 'asc' ? 'desc' : 'asc';
+    cState.sort = col; cState.page = 0;
+    updateSortIcons('c', col, cState.dir); loadCategoryTable();
+}
+function goCategoryPage(p) { cState.page = p; loadCategoryTable(); window.scrollTo({top:0,behavior:'smooth'}); }
+
+// ═══════════════════════════════════════════════════
+// DELETE shared
+// ═══════════════════════════════════════════════════
+function openDeleteModal(id, name, type) {
+    deleteTarget = { id, name, type };
+    document.getElementById('deleteName').textContent = `"${name}"`;
+    showOverlay('deleteOverlay');
+}
+async function confirmDelete() {
+    const { id, name, type } = deleteTarget;
+    const url = type === 'product' ? `${API_PRODUCTS}/${id}` : `${API_CATEGORIES}/${id}`;
+    try {
+        const res = await fetch(url, { method:'DELETE' });
+        if (!res.ok) { const err = await res.json(); throw new Error(err.message || 'Lỗi'); }
+        showToast('success', `Đã xóa "${name}"`);
+        closeDeleteModal();
+        if (type === 'product') loadProducts();
+        else { await loadCategories(); loadCategoryTable(); }
+    } catch(e) { showToast('error', e.message || 'Xóa thất bại!'); }
+}
+function closeDeleteModal() { hideOverlay('deleteOverlay'); }
+
+// ═══════════════════════════════════════════════════
+// PAGINATION shared
+// ═══════════════════════════════════════════════════
+function renderPagination(prefix, data, goFn) {
+    const total   = data.totalPages    || 1;
+    const current = data.number        || 0;
+    const totalEl = data.totalElements || 0;
+    const size    = prefix === 'p' ? pState.size : cState.size;
+    const from    = current * size + 1;
+    const to      = Math.min(from + size - 1, totalEl);
+    document.getElementById(`${prefix}-pageInfo`).textContent =
+        totalEl ? `Hiển thị ${from}–${to} / ${totalEl}` : 'Không có dữ liệu';
+    const ul = document.getElementById(`${prefix}-pagination`);
+    ul.innerHTML = '';
+    const mkBtn = (label, page, disabled, active = false) => {
+        const li = document.createElement('li');
+        const btn = document.createElement('button');
+        btn.className = 'page-btn' + (active ? ' active' : '');
+        btn.textContent = label; btn.disabled = disabled;
+        if (!disabled && !active) btn.onclick = () => goFn(page);
+        li.appendChild(btn); return li;
+    };
+    ul.appendChild(mkBtn('‹', current - 1, current === 0));
+    pageRange(current, total).forEach(p => {
+        if (p === '...') {
+            const li = document.createElement('li');
+            li.innerHTML = `<div class="page-btn" style="cursor:default;border:none;color:#adb5bd">…</div>`;
+            ul.appendChild(li);
+        } else ul.appendChild(mkBtn(p + 1, p, false, p === current));
+    });
+    ul.appendChild(mkBtn('›', current + 1, current >= total - 1));
+}
+function pageRange(cur, total) {
+    if (total <= 7) return Array.from({length:total}, (_,i) => i);
+    if (cur < 4)         return [0,1,2,3,4,'...',total-1];
+    if (cur > total - 5) return [0,'...',total-5,total-4,total-3,total-2,total-1];
+    return [0,'...',cur-1,cur,cur+1,'...',total-1];
+}
+
+// ═══════════════════════════════════════════════════
+// SORT / SLUG / OVERLAY / TOAST / HELPERS
+// ═══════════════════════════════════════════════════
+function updateSortIcons(prefix, col, dir) {
+    const cols = prefix === 'p' ? ['name','price','status'] : ['name','status'];
+    const pre  = prefix === 'p' ? 'psort-' : 'csort-';
+    cols.forEach(c => {
+        const el = document.getElementById(pre + c);
+        if (!el) return;
+        el.textContent = c === col ? (dir === 'asc' ? '↑' : '↓') : '⇅';
+    });
+}
+
+function autoSlug(val, force = false) {
+    const el = document.getElementById('productSlug');
+    if (!force && el.dataset.manual === 'true') return;
+    el.value = toSlug(val);
+}
+function toSlug(str) {
+    if (!str) return '';
+    return str.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+        .replace(/đ/g,'d').replace(/Đ/g,'D')
+        .replace(/[^a-z0-9\s-]/g,'').trim()
+        .replace(/\s+/g,'-').replace(/-+/g,'-');
+}
+
+function showOverlay(id) { document.getElementById(id).classList.add('show'); }
+function hideOverlay(id) { document.getElementById(id).classList.remove('show'); }
+function closeOnOverlay(e, id) { if (e.target.id === id) hideOverlay(id); }
+
+function showToast(type, msg) {
+    const c = document.getElementById('toastContainer');
+    const t = document.createElement('div');
+    const icon = {success:'circle-check', error:'circle-exclamation', warning:'triangle-exclamation'}[type];
+    t.className = `toast toast-${type}`;
+    t.innerHTML = `<i class="fa-solid fa-${icon}"></i> ${msg}`;
+    c.appendChild(t);
+    setTimeout(() => t.remove(), 3200);
+}
+
+function fmtPrice(n) { return new Intl.NumberFormat('vi-VN',{style:'currency',currency:'VND'}).format(n); }
+function escHtml(s) {
+    if (!s) return '';
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;');
+}
+function escJs(s) {
+    if (!s) return '';
+    return String(s).replace(/\\/g,'\\\\').replace(/'/g,"\\'").replace(/"/g,'\\"');
+}
+</script>
+</th:block>
+</body>
+</html>

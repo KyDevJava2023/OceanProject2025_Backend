@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<div th:fragment="header">
+    <style>
+        .page-header {
+            background: linear-gradient(87deg, #5e72e4 0, #825ee4 100%);
+            padding: 0 24px 120px;
+            min-height: 160px;
+        }
+        .page-header-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #fff;
+            letter-spacing: 0.3px;
+            padding-top: 10px;
+        }
+    </style>
+
+    <div class="page-header">
+        <div class="page-header-title" layout:fragment="page-title">Dashboard</div>
+    </div>
+</div>
+</body>
+</html>

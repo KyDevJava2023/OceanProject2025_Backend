@@ -24,8 +24,8 @@ public class HomeController extends BaseController {
 
     @GetMapping("/")
     public String home(HttpServletRequest request, Model model) {
-        // 1) lấy 5 category PRODUCT
-        var topCats = categoryRepo.findTop5ByTypeAndStatusOrderByIdAsc("PRODUCT", Status.ACTIVE);
+        // 1) lấy 4 category PRODUCT
+        var topCats = categoryRepo.findTop4ByTypeAndStatusOrderByIdAsc("PRODUCT", Status.ACTIVE);
         var cartonProducts = productRepo
                 .findTop12ByCategory_SlugAndCategory_TypeAndDeletedAtIsNullAndStatusOrderByIdDesc(
                         "thung-carton", "PRODUCT", Status.ACTIVE);
@@ -46,7 +46,7 @@ public class HomeController extends BaseController {
         model.addAttribute("productsByCat", productsByCat);
         addSeoUrls(request, model);
         model.addAttribute("schemaPage", "home");
-        model.addAttribute("content", "site/home");
+        model.addAttribute("content", "site/page/home");
         return "site/layout/base";
     }
 

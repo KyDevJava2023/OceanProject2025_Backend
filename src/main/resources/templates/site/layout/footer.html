@@ -1,75 +1,124 @@
 <footer th:fragment="footer" xmlns:th="http://www.thymeleaf.org">
 
-        <!-- Footer Start -->
-        <div class="container-fluid bg-dark text-white-50 footer pt-5 mt-5">
-            <div class="container py-5">
-                <div class="pb-4 mb-4" style="border-bottom: 1px solid rgba(226, 175, 24, 0.5) ;">
-                    <div class="row g-4">
-                        <div class="col-lg-3">
-                            <a href="#">
-                                <h1 class="text-primary mb-0">Fruitables</h1>
-                                <p class="text-secondary mb-0">Fresh products</p>
-                            </a>
+    <!-- Footer Start -->
+    <div class="container-fluid bg-dark text-white-50 footer pt-5 mt-5">
+        <div class="container py-5">
+
+            <!-- TOP FOOTER -->
+            <div class="pb-4 mb-4" style="border-bottom: 1px solid rgba(49, 184, 237, 0.3);">
+                <div class="row g-4 align-items-center">
+
+                    <!-- Brand -->
+                    <div class="col-lg-3">
+                        <a th:href="@{/}" class="text-decoration-none">
+                            <h1 class="text-primary mb-0">Ocean Machinery</h1>
+                            <p class="text-secondary mb-0">Máy cán tôn – bẻ đai – hàn đai cọc – đan lưới</p>
+                        </a>
+                    </div>
+
+                    <!-- Lead form -->
+                    <div class="col-lg-6">
+                        <div class="position-relative mx-auto">
+                            <input class="form-control border-0 w-100 py-3 px-4 rounded-pill"
+                                type="email" placeholder="Nhập email để nhận báo giá &amp; tư vấn miễn phí">
+                            <button type="submit"
+                                class="btn btn-primary border-0 py-3 px-4 position-absolute rounded-pill text-white"
+                                style="top: 0; right: 0;">Gửi</button>
                         </div>
-                        <div class="col-lg-6">
-                            <div class="position-relative mx-auto">
-                                <input class="form-control border-0 w-100 py-3 px-4 rounded-pill" type="number" placeholder="Your Email">
-                                <button type="submit" class="btn btn-primary border-0 border-secondary py-3 px-4 position-absolute rounded-pill text-white" style="top: 0; right: 0;">Subscribe Now</button>
-                            </div>
+                    </div>
+
+                    <!-- Social -->
+                    <div class="col-lg-3">
+                        <div class="d-flex justify-content-end pt-3">
+                            <a class="btn btn-outline-secondary me-2 btn-md-square rounded-circle" href="#"><i class="fab fa-facebook-f"></i></a>
+                            <a class="btn btn-outline-secondary me-2 btn-md-square rounded-circle" href="#"><i class="fab fa-youtube"></i></a>
+                            <a class="btn btn-outline-secondary btn-md-square rounded-circle" href="#"><i class="fab fa-tiktok"></i></a>
                         </div>
-                        <div class="col-lg-3">
-                            <div class="d-flex justify-content-end pt-3">
-                                <a class="btn  btn-outline-secondary me-2 btn-md-square rounded-circle" href=""><i class="fab fa-twitter"></i></a>
-                                <a class="btn btn-outline-secondary me-2 btn-md-square rounded-circle" href=""><i class="fab fa-facebook-f"></i></a>
-                                <a class="btn btn-outline-secondary me-2 btn-md-square rounded-circle" href=""><i class="fab fa-youtube"></i></a>
-                                <a class="btn btn-outline-secondary btn-md-square rounded-circle" href=""><i class="fab fa-linkedin-in"></i></a>
-                            </div>
-                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- MAIN FOOTER -->
+            <div class="row g-5">
+
+                <!-- About -->
+                <div class="col-lg-3 col-md-6">
+                    <div class="footer-item">
+                        <h4 class="text-light mb-3">Về Ocean Machinery</h4>
+                        <p class="mb-4">
+                            Ocean Machinery chuyên phân phối và buôn bán máy cán tôn, máy bẻ đai sắt,
+                            máy hàn đai cọc bê tông, máy đan lưới B40 và các thiết bị cơ khí xây dựng.
+                        </p>
+                        <a th:href="@{/gioi-thieu}"
+                            class="btn border-secondary py-2 px-4 rounded-pill text-primary">
+                            Tìm hiểu thêm
+                        </a>
                     </div>
                 </div>
-                <div class="row g-5">
-                    <div class="col-lg-3 col-md-6">
-                        <div class="footer-item">
-                            <h4 class="text-light mb-3">Why People Like us!</h4>
-                            <p class="mb-4">typesetting, remaining essentially unchanged. It was 
-                                popularised in the 1960s with the like Aldus PageMaker including of Lorem Ipsum.</p>
-                            <a href="" class="btn border-secondary py-2 px-4 rounded-pill text-primary">Read More</a>
-                        </div>
+
+                <!-- Menu -->
+                <div class="col-lg-3 col-md-6">
+                    <div class="d-flex flex-column text-start footer-item">
+                        <h4 class="text-light mb-3">Thông tin</h4>
+                        <a class="btn-link" th:href="@{/gioi-thieu}">Giới thiệu</a>
+                        <a class="btn-link" th:href="@{/san-pham}">Sản phẩm</a>
+                        <a class="btn-link" th:href="@{/thuong-hieu}">Thương hiệu đối tác</a>
+                        <a class="btn-link" th:href="@{/blog}">Blog &amp; Tin tức</a>
+                        <a class="btn-link" th:href="@{/lien-he}">Liên hệ</a>
+                        <a class="btn-link" th:href="@{/chinh-sach-bao-hanh}">Chính sách bảo hành</a>
                     </div>
-                    <div class="col-lg-3 col-md-6">
-                        <div class="d-flex flex-column text-start footer-item">
-                            <h4 class="text-light mb-3">Shop Info</h4>
-                            <a class="btn-link" href="">About Us</a>
-                            <a class="btn-link" href="">Contact Us</a>
-                            <a class="btn-link" href="">Privacy Policy</a>
-                            <a class="btn-link" href="">Terms & Condition</a>
-                            <a class="btn-link" href="">Return Policy</a>
-                            <a class="btn-link" href="">FAQs & Help</a>
-                        </div>
+                </div>
+
+                <!-- Danh mục máy -->
+                <div class="col-lg-3 col-md-6">
+                    <div class="d-flex flex-column text-start footer-item">
+                        <h4 class="text-light mb-3">Danh mục máy</h4>
+                        <a class="btn-link" th:href="@{/san-pham/may-can-ton}">Máy Cán Tôn</a>
+                        <a class="btn-link" th:href="@{/san-pham/may-be-dai}">Máy Bẻ Đai Sắt</a>
+                        <a class="btn-link" th:href="@{/san-pham/may-han-dai-coc}">Máy Hàn Đai Cọc Bê Tông</a>
+                        <a class="btn-link" th:href="@{/san-pham/may-dan-luoi}">Máy Đan Lưới B40 &amp; Kẽm Gai</a>
+                        <a class="btn-link" th:href="@{/san-pham/may-uon-sat}">Máy Uốn Sắt</a>
+                        <a class="btn-link" th:href="@{/san-pham/may-cat-sat}">Máy Cắt Sắt</a>
+                        <a class="btn-link" th:href="@{/san-pham/may-duoi-sat}">Máy Duỗi Sắt</a>
                     </div>
-                    <div class="col-lg-3 col-md-6">
-                        <div class="d-flex flex-column text-start footer-item">
-                            <h4 class="text-light mb-3">Account</h4>
-                            <a class="btn-link" href="">My Account</a>
-                            <a class="btn-link" href="">Shop details</a>
-                            <a class="btn-link" href="">Shopping Cart</a>
-                            <a class="btn-link" href="">Wishlist</a>
-                            <a class="btn-link" href="">Order History</a>
-                            <a class="btn-link" href="">International Orders</a>
-                        </div>
+                </div>
+
+                <!-- Contact -->
+                <div class="col-lg-3 col-md-6">
+                    <div class="footer-item">
+                        <h4 class="text-light mb-3">Liên hệ</h4>
+                        <p><i class="fas fa-map-marker-alt text-primary me-2"></i>123 Nguyễn Văn Linh, Quận 7, TP.HCM</p>
+                        <p><i class="fas fa-envelope text-primary me-2"></i>kinhdoanh@ocean.vn</p>
+                        <p><i class="fas fa-phone-alt text-primary me-2"></i>0901 234 567 (Kinh doanh)</p>
+                        <p><i class="fas fa-tools text-primary me-2"></i>0907 654 321 (Kỹ thuật)</p>
+                        <p><i class="fas fa-clock text-primary me-2"></i>T2–T6: 7:30 – 17:30 | T7: 7:30 – 12:00</p>
+                        <p class="mt-3">Hình thức thanh toán</p>
+                        <img th:src="@{/site/img/payment.png}" class="img-fluid" alt="Phương thức thanh toán">
                     </div>
-                    <div class="col-lg-3 col-md-6">
-                        <div class="footer-item">
-                            <h4 class="text-light mb-3">Contact</h4>
-                            <p>Address: 1429 Netus Rd, NY 48247</p>
-                            <p>Email: Example@gmail.com</p>
-                            <p>Phone: +0123 4567 8910</p>
-                            <p>Payment Accepted</p>
-                            <img th:src="@{/site/img/payment.png}" class="img-fluid" alt="Payment Methods">
-                        </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Copyright -->
+        <div class="container-fluid copyright bg-dark py-3">
+            <div class="container">
+                <div class="row g-2 align-items-center">
+                    <div class="col-md-6 text-center text-md-start text-white-50">
+                        <small>© <span th:text="${#dates.year(#dates.createNow())}">2025</span>
+                            <a href="/" class="text-primary fw-bold">Ocean Machinery</a>.
+                            Tất cả quyền được bảo lưu.
+                        </small>
+                    </div>
+                    <div class="col-md-6 text-center text-md-end text-white-50">
+                        <small>Phân phối máy cán tôn, bẻ đai, hàn đai cọc, đan lưới – Toàn quốc</small>
                     </div>
                 </div>
             </div>
         </div>
-        <!-- Footer End -->
+
+    </div>
+    <!-- Footer End -->
+
 </footer>

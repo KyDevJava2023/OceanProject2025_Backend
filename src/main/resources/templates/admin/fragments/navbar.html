@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<body>
+    <div th:fragment="navbar">
+        <style>
+            .navbar {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 14px 24px;
+
+                background: linear-gradient(90deg, #5f8cff, #7b5cff);
+
+                position: relative;
+                z-index: 10;
+            }
+
+            .navbar-left {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+                font-size: 13px;
+                color: rgba(255, 255, 255, .7);
+            }
+
+            .navbar-left a {
+                color: rgba(255, 255, 255, .7);
+                text-decoration: none;
+                transition: color .2s;
+            }
+
+            .navbar-left a:hover {
+                color: #fff;
+            }
+
+            .navbar-left .separator {
+                margin: 0 4px;
+            }
+
+            .navbar-left .current {
+                color: #fff;
+                font-weight: 600;
+            }
+
+            .navbar-right {
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+
+            .navbar-btn {
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                padding: 8px 14px;
+                border-radius: 20px;
+                border: none;
+                font-size: 12px;
+                font-weight: 600;
+                cursor: pointer;
+                text-decoration: none;
+                transition: all .2s;
+                background: rgba(255, 255, 255, .15);
+                color: #fff;
+                backdrop-filter: blur(4px);
+            }
+
+            .navbar-btn:hover {
+                background: rgba(255, 255, 255, .25);
+                color: #fff;
+            }
+
+            .navbar-avatar {
+                width: 34px;
+                height: 34px;
+                border-radius: 50%;
+                background: rgba(255, 255, 255, .25);
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: #fff;
+                font-size: 14px;
+                border: 2px solid rgba(255, 255, 255, .4);
+            }
+        </style>
+
+        <div class="navbar">
+            <div class="navbar-left">
+                <a th:href="@{/admin/dashboard}">Trang chủ</a>
+                <span class="separator">/</span>
+                <span class="current" layout:fragment="page-title">Dashboard</span>
+            </div>
+            <div class="navbar-right">
+                <a href="#" class="navbar-btn">
+                    <i class="fa-regular fa-bell"></i>
+                </a>
+                <div class="navbar-avatar">
+                    <i class="fa-solid fa-user"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

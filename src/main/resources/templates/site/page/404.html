@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>404 – Trang không tồn tại | Ocean</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@400;600;700;800&family=Oswald:wght@500;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --primary:       #31b8ed;
+      --primaryDark:   #1a8bbf;
+      --primaryLight:  #dff3fc;
+      --accent:        #ff6700;
+      --dark:          #1a1a2e;
+      --darkMid:       #2d3748;
+      --textBody:      #45595b;
+      --textMuted:     #7a8f8f;
+      --borderColor:   #b8e2f7;
+      --bgLight:       #f0faff;
+      --white:         #ffffff;
+      --shadow:        0 4px 24px rgba(49,184,237,.15);
+      --radius:        8px;
+      --transition:    .3s ease;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Nunito Sans', sans-serif;
+      color: var(--textBody);
+      background: var(--dark);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ===== 404 MAIN ===== */
+    .notFoundSection {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Animated background dots */
+    .notFoundSection::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 15% 50%, rgba(49,184,237,.08) 0%, transparent 50%),
+        radial-gradient(circle at 85% 30%, rgba(255,103,0,.06) 0%, transparent 50%),
+        url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none'%3E%3Cg fill='%2381c408' fill-opacity='0.04'%3E%3Ccircle cx='40' cy='40' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+      pointer-events: none;
+    }
+
+    .notFoundInner {
+      text-align: center;
+      position: relative;
+      max-width: 680px;
+      width: 100%;
+    }
+
+    /* Giant 404 number */
+    .errorNum {
+      font-family: 'Oswald', sans-serif;
+      font-size: clamp(8rem, 20vw, 14rem);
+      font-weight: 700;
+      line-height: 1;
+      letter-spacing: -4px;
+      color: transparent;
+      -webkit-text-stroke: 3px rgba(49,184,237,.3);
+      position: relative;
+      user-select: none;
+    }
+    .errorNum .zeroWrap {
+      position: relative;
+      display: inline-block;
+    }
+    .errorNum .zeroWrap .gearIcon {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: clamp(60px, 12vw, 110px);
+      height: clamp(60px, 12vw, 110px);
+      fill: var(--primary);
+      animation: spinGear 8s linear infinite;
+    }
+
+    @keyframes spinGear {
+      from { transform: translate(-50%, -50%) rotate(0deg); }
+      to   { transform: translate(-50%, -50%) rotate(360deg); }
+    }
+
+    /* Floating crane illustration */
+    .craneIllo {
+      display: flex;
+      justify-content: center;
+      margin: -20px 0 24px;
+    }
+    .craneIllo svg {
+      width: clamp(80px, 15vw, 130px);
+      height: auto;
+      fill: none;
+      animation: floatUp 3s ease-in-out infinite;
+    }
+    @keyframes floatUp {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(-12px); }
+    }
+
+    .errorTag {
+      display: inline-block;
+      background: var(--accent);
+      color: var(--white);
+      font-size: .78rem;
+      font-weight: 800;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 6px 20px;
+      border-radius: 50px;
+      margin-bottom: 20px;
+    }
+
+    .errorTitle {
+      font-family: 'Oswald', sans-serif;
+      font-size: clamp(1.6rem, 4vw, 2.4rem);
+      font-weight: 700;
+      color: var(--white);
+      text-transform: uppercase;
+      margin-bottom: 14px;
+    }
+    .errorTitle span { color: var(--primary); }
+
+    .errorDesc {
+      color: rgba(255,255,255,.55);
+      font-size: .97rem;
+      line-height: 1.7;
+      max-width: 460px;
+      margin: 0 auto 36px;
+    }
+
+    /* Action buttons */
+    .errorActions {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+      margin-bottom: 50px;
+    }
+    .btnPrimary {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--primary);
+      color: var(--white);
+      font-family: 'Oswald', sans-serif;
+      font-size: 1rem; font-weight: 600;
+      letter-spacing: 1px; text-transform: uppercase;
+      padding: 14px 32px;
+      border-radius: var(--radius);
+      text-decoration: none;
+      border: none; cursor: pointer;
+      transition: background var(--transition), transform var(--transition), box-shadow var(--transition);
+      box-shadow: 0 6px 20px rgba(49,184,237,.4);
+    }
+    .btnPrimary:hover {
+      background: var(--primaryDark);
+      transform: translateY(-2px);
+      box-shadow: 0 10px 30px rgba(49,184,237,.5);
+    }
+    .btnGhost {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      background: transparent;
+      color: rgba(255,255,255,.7);
+      border: 2px solid rgba(255,255,255,.2);
+      font-family: 'Oswald', sans-serif;
+      font-size: 1rem; font-weight: 600;
+      letter-spacing: 1px; text-transform: uppercase;
+      padding: 13px 32px;
+      border-radius: var(--radius);
+      text-decoration: none;
+      transition: all var(--transition);
+    }
+    .btnGhost:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+      transform: translateY(-2px);
+    }
+    .btnPrimary svg, .btnGhost svg { width: 18px; height: 18px; fill: currentColor; }
+
+    /* Quick links */
+    .quickLinks {
+      padding-top: 32px;
+      border-top: 1px solid rgba(255,255,255,.08);
+    }
+    .quickLinksTitle {
+      font-size: .8rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.35);
+      margin-bottom: 16px;
+    }
+    .quickLinksGrid {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .quickLinkItem {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,255,255,.05);
+      border: 1px solid rgba(49,184,237,.15);
+      padding: 10px 18px;
+      border-radius: 50px;
+      text-decoration: none;
+      color: rgba(255,255,255,.6);
+      font-size: .88rem;
+      font-weight: 600;
+      transition: all var(--transition);
+    }
+    .quickLinkItem:hover {
+      background: rgba(49,184,237,.1);
+      border-color: var(--primary);
+      color: var(--primary);
+      transform: translateY(-2px);
+    }
+    .quickLinkItem svg { width: 15px; height: 15px; fill: currentColor; }
+
+    /* Bottom bar */
+    .errorFooter {
+      background: rgba(0,0,0,.3);
+      border-top: 1px solid rgba(255,255,255,.06);
+      padding: 18px 24px;
+      text-align: center;
+    }
+    .errorFooter p {
+      font-size: .85rem;
+      color: rgba(255,255,255,.35);
+    }
+    .errorFooter p a {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 700;
+    }
+    .errorFooter p a:hover { text-decoration: underline; }
+
+    /* Decorative corner elements */
+    .cornerDeco {
+      position: fixed;
+      opacity: .06;
+      pointer-events: none;
+    }
+    .cornerDeco.topLeft  { top: -40px; left: -40px; }
+    .cornerDeco.botRight { bottom: -40px; right: -40px; }
+    .cornerDeco svg { width: 280px; height: 280px; fill: var(--primary); }
+
+    @media (max-width: 480px) {
+      .errorNum { -webkit-text-stroke: 2px rgba(49,184,237,.3); }
+      .errorActions { flex-direction: column; align-items: center; }
+      .btnPrimary, .btnGhost { width: 100%; max-width: 280px; justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Corner decorations -->
+  <div class="cornerDeco topLeft">
+    <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+  </div>
+  <div class="cornerDeco botRight">
+    <svg viewBox="0 0 24 24"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+  </div>
+
+  <!-- 404 MAIN -->
+  <main class="notFoundSection">
+    <div class="notFoundInner">
+
+      <!-- Animated 404 -->
+      <div class="errorNum" aria-hidden="true">
+        4<span class="zeroWrap">0
+          <svg class="gearIcon" viewBox="0 0 24 24">
+            <path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/>
+          </svg>
+        </span>4
+      </div>
+
+      <!-- Floating crane -->
+      <div class="craneIllo" aria-hidden="true">
+        <svg viewBox="0 0 120 100" xmlns="http://www.w3.org/2000/svg">
+          <!-- Crane body -->
+          <rect x="52" y="40" width="8" height="52" fill="#31b8ed" rx="2"/>
+          <!-- Horizontal arm -->
+          <rect x="10" y="38" width="90" height="6" fill="#31b8ed" rx="2"/>
+          <!-- Counter arm -->
+          <rect x="10" y="38" width="25" height="4" fill="#1a8bbf" rx="1"/>
+          <!-- Cabin -->
+          <rect x="48" y="32" width="18" height="14" fill="#2d3748" rx="3"/>
+          <rect x="50" y="34" width="14" height="8" fill="#31b8ed" rx="2" opacity=".4"/>
+          <!-- Hook wire -->
+          <line x1="96" y1="44" x2="96" y2="72" stroke="#ff6700" stroke-width="2"/>
+          <!-- Hook -->
+          <path d="M92 72 Q96 78 100 72" stroke="#ff6700" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+          <!-- Load box -->
+          <rect x="86" y="74" width="20" height="14" fill="#ff6700" rx="2" opacity=".85"/>
+          <line x1="86" y1="78" x2="106" y2="78" stroke="rgba(0,0,0,.2)" stroke-width="1"/>
+          <!-- Wheels/base -->
+          <rect x="42" y="90" width="28" height="6" fill="#2d3748" rx="3"/>
+          <circle cx="48" cy="96" r="4" fill="#1a1a2e" stroke="#31b8ed" stroke-width="1.5"/>
+          <circle cx="64" cy="96" r="4" fill="#1a1a2e" stroke="#31b8ed" stroke-width="1.5"/>
+          <!-- Counter weight -->
+          <rect x="12" y="42" width="12" height="8" fill="#ff6700" rx="2" opacity=".7"/>
+        </svg>
+      </div>
+
+      <div class="errorTag">⚠️ Lỗi 404</div>
+
+      <h1 class="errorTitle">
+        Trang <span>không tìm thấy</span>
+      </h1>
+
+      <p class="errorDesc">
+        Có vẻ như trang bạn đang tìm đã bị di chuyển, xóa hoặc chưa được xây dựng — giống như một công trình chưa hoàn thiện! Hãy quay lại trang chủ của <strong style="color:rgba(255,255,255,.8)">Ocean</strong> để tiếp tục.
+      </p>
+
+      <div class="errorActions">
+        <a href="#" class="btnPrimary">
+          <svg viewBox="0 0 24 24"><path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/></svg>
+          Về trang chủ
+        </a>
+        <a href="#" class="btnGhost">
+          <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0016 9.5 6.5 6.5 0 109.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+          Tìm kiếm
+        </a>
+      </div>
+
+      <!-- Quick links -->
+      <div class="quickLinks">
+        <p class="quickLinksTitle">Hoặc truy cập nhanh</p>
+        <div class="quickLinksGrid">
+          <a href="#" class="quickLinkItem">
+            <svg viewBox="0 0 24 24"><path d="M20.57 14.86L22 13.43 20.57 12 17 15.57 8.43 7 12 3.43 10.57 2 9.14 3.43 7.71 2 5.57 4.14 4.14 2.71 2.71 4.14l1.43 1.43L2 7.71l1.43 1.43L2 10.57 3.43 12 7 8.43 15.57 17 12 20.57 13.43 22l1.43-1.43L16.29 22l2.14-2.14 1.43 1.43 1.43-1.43-1.43-1.43L22 16.29z"/></svg>
+            Sản phẩm
+          </a>
+          <a href="#" class="quickLinkItem">
+            <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+            Liên hệ
+          </a>
+          <a href="#" class="quickLinkItem">
+            <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+            Về chúng tôi
+          </a>
+          <a href="#" class="quickLinkItem">
+            <svg viewBox="0 0 24 24"><path d="M11.5 2C6.81 2 3 5.81 3 10.5S6.81 19 11.5 19h.5v3c4.86-2.34 8-7 8-11.5C20 5.81 16.19 2 11.5 2zm1 14.5h-2v-2h2v2zm0-4h-2c0-3.25 3-3 3-5 0-1.1-.9-2-2-2s-2 .9-2 2h-2c0-2.21 1.79-4 4-4s4 1.79 4 4c0 2.5-3 2.75-3 5z"/></svg>
+            Hỗ trợ
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- FOOTER BAR -->
+  <footer class="errorFooter">
+    <p>© 2025 <a href="#">Ocean Machinery</a> – Máy móc công nghiệp xây dựng. Tất cả quyền được bảo lưu.</p>
+  </footer>
+
+</body>
+</html>

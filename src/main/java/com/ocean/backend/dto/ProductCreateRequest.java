@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductCreateRequest {
+public class  ProductCreateRequest{
     private String name;
     private String slug;
     private BigDecimal price;
