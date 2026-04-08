@@ -2,137 +2,136 @@
 <html lang="vi" xmlns:th="http://www.thymeleaf.org">
 
 <head xmlns:th="http://www.thymeleaf.org">
-    <!-- ========================= -->
-    <!-- BASIC META -->
-    <!-- ========================= -->
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <!-- ========================= -->
+  <!-- BASIC META -->
+  <!-- ========================= -->
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-    <title th:text="${seo != null && seo.metaTitle != null
-        ? seo.metaTitle
-        : 'Ocean Bao Bì – Sản xuất thùng carton & vật tư đóng gói tại TP.HCM'}">
-        Ocean Bao Bì
-    </title>
+ <title th:text="${seo != null && seo.metaTitle != null
+      ? seo.metaTitle
+      : 'Ocean Machinery – Máy cán tôn, bẻ đai, hàn đai cọc, đan lưới tại TP.HCM'}">
+  Ocean Machinery
+</title>
 
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <meta name="description"
-          th:content="${seo != null && seo.metaDescription != null
-            ? seo.metaDescription
-            : 'Ocean Bao Bì chuyên sản xuất thùng carton 3–5–7 lớp, in ấn theo yêu cầu, cung cấp vật tư đóng gói tại TP.HCM.'}">
+<meta name="description"
+  th:content="${seo != null && seo.metaDescription != null
+          ? seo.metaDescription
+          : 'Ocean Machinery chuyên phân phối máy cán tôn, máy bẻ đai sắt, máy hàn đai cọc bê tông, máy đan lưới B40 – hàng chính hãng Đại Thắng, Chho, Cơ Khí Miền Nam, SaigonMachine, Cunmac. Giao toàn quốc.'}">
 
-    <meta name="keywords"
-          th:content="${seo != null && seo.metaKeywords != null
-            ? seo.metaKeywords
-            : 'bao bì carton, thùng carton, ocean bao bì, vật tư đóng gói'}">
+<meta name="keywords" th:content="${seo != null && seo.metaKeywords != null
+          ? seo.metaKeywords
+          : 'máy cán tôn, máy bẻ đai sắt, máy hàn đai cọc bê tông, máy đan lưới b40, ocean machinery, cơ khí xây dựng, máy uốn sắt, máy cắt sắt'}">
 
-    <!-- ========================= -->
-    <!-- ROBOTS & INDEX -->
-    <!-- ========================= -->
-    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
-    <meta name="googlebot" content="index, follow">
+  <!-- ========================= -->
+  <!-- ROBOTS & INDEX -->
+  <!-- ========================= -->
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+  <meta name="googlebot" content="index, follow">
 
-    <!-- ========================= -->
-    <!-- CANONICAL -->
-    <!-- ========================= -->
-    <link rel="canonical" th:href="${currentUrl}">
+  <!-- ========================= -->
+  <!-- CANONICAL -->
+  <!-- ========================= -->
+  <link rel="canonical" th:href="${currentUrl}">
+  <!-- ═══ Favicon ═══ -->
+  <link rel="icon" type="image/x-icon" th:href="@{/site/img/favicon.ico}">
+  <link rel="icon" type="image/png" sizes="32x32" th:href="@{/site/img/favicon-32x32.png}">
+  <link rel="icon" type="image/png" sizes="16x16" th:href="@{/site/img/favicon-16x16.png}">
+  <link rel="apple-touch-icon" sizes="180x180" th:href="@{/site/img/apple-icon-180x180.png}">
+  <link rel="icon" type="image/png" sizes="192x192" th:href="@{/site/img/android-icon-192x192.png}">
 
-    <!-- ========================= -->
-    <!-- OPEN GRAPH -->
-    <!-- ========================= -->
-    <meta property="og:type" content="website">
-    <meta property="og:site_name" content="Ocean Bao Bì">
-    <meta property="og:locale" content="vi_VN">
+  <!-- ========================= -->
+  <!-- OPEN GRAPH -->
+  <!-- ========================= -->
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Ocean Bao Bì">
+  <meta property="og:locale" content="vi_VN">
 
-    <meta property="og:title"
-          th:content="${seo != null && seo.metaTitle != null
+  <meta property="og:title" th:content="${seo != null && seo.metaTitle != null
             ? seo.metaTitle
             : 'Ocean Bao Bì'}">
 
-    <meta property="og:description"
-          th:content="${seo != null && seo.metaDescription != null
+  <meta property="og:description" th:content="${seo != null && seo.metaDescription != null
             ? seo.metaDescription
             : 'Sản xuất và in ấn bao bì carton tại TP.HCM'}">
 
-    <meta property="og:url" th:content="${currentUrl}">
+  <meta property="og:url" th:content="${currentUrl}">
 
-    <meta property="og:image"
-          th:content="${seo != null && seo.ogImage != null
+  <meta property="og:image" th:content="${seo != null && seo.ogImage != null
             ? seo.ogImage
-            : '/site/img/og-default.jpg'}">
+            : 'https://maycongnghiepocean.com/site/img/og-default.jpg'}">
 
-    <meta property="og:image:width" content="1200">
-    <meta property="og:image:height" content="630">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
 
-    <!-- ========================= -->
-    <!-- TWITTER CARD -->
-    <!-- ========================= -->
-    <meta name="twitter:card" content="summary_large_image">
+  <!-- ========================= -->
+  <!-- TWITTER CARD -->
+  <!-- ========================= -->
+  <meta name="twitter:card" content="summary_large_image">
 
-    <meta name="twitter:title"
-          th:content="${seo != null && seo.metaTitle != null
+  <meta name="twitter:title" th:content="${seo != null && seo.metaTitle != null
             ? seo.metaTitle
             : 'Ocean Bao Bì'}">
 
-    <meta name="twitter:description"
-          th:content="${seo != null && seo.metaDescription != null
+  <meta name="twitter:description" th:content="${seo != null && seo.metaDescription != null
             ? seo.metaDescription
             : 'Sản xuất và in ấn bao bì carton'}">
 
-    <meta name="twitter:image"
-          th:content="${seo != null && seo.ogImage != null
+  <meta name="twitter:image" th:content="${seo != null && seo.ogImage != null
             ? seo.ogImage
-            : '/site/img/og-default.jpg'}">
+            : 'https://maycongnghiepocean.com/site/img/og-default.jpg'}">
 
-    <!-- ========================= -->
-    <!-- LOCAL SEO -->
-    <!-- ========================= -->
-    <meta http-equiv="content-language" content="vi">
-    <meta name="language" content="Vietnamese">
-    <meta name="geo.region" content="VN-SG">
-    <meta name="geo.placename" content="Ho Chi Minh City">
-    <meta name="geo.position" content="10.8231;106.6297">
-    <meta name="ICBM" content="10.8231, 106.6297">
+  <!-- ========================= -->
+  <!-- LOCAL SEO -->
+  <!-- ========================= -->
+  <meta http-equiv="content-language" content="vi">
+  <meta name="language" content="Vietnamese">
+  <meta name="geo.region" content="VN-SG">
+  <meta name="geo.placename" content="Ho Chi Minh City">
+  <meta name="geo.position" content="10.8231;106.6297">
+  <meta name="ICBM" content="10.8231, 106.6297">
 
-    <!-- ========================= -->
-    <!-- AUTHOR -->
-    <!-- ========================= -->
-    <meta name="author" content="Ocean Bao Bì">
-    <meta name="copyright" content="Ocean Bao Bì">
-    <meta name="revisit-after" content="7 days">
+  <!-- ========================= -->
+  <!-- AUTHOR -->
+  <!-- ========================= -->
+  <meta name="author" content="Ocean Bao Bì">
+  <meta name="copyright" content="Ocean Bao Bì">
+  <meta name="revisit-after" content="7 days">
 
-    <!-- ========================= -->
-    <!-- GOOGLE FONTS -->
-    <!-- ========================= -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Raleway:wght@600;800&display=swap"
-          rel="stylesheet">
+  <!-- ========================= -->
+  <!-- GOOGLE FONTS -->
+  <!-- ========================= -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Raleway:wght@600;800&display=swap"
+    rel="stylesheet">
 
-    <!-- ========================= -->
-    <!-- ICONS -->
-    <!-- ========================= -->
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css">
+  <!-- ========================= -->
+  <!-- ICONS -->
+  <!-- ========================= -->
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css">
 
-    <!-- ========================= -->
-    <!-- CSS LIBRARIES -->
-    <!-- ========================= -->
-    <link rel="stylesheet" th:href="@{/site/lib/lightbox/css/lightbox.min.css}">
-    <link rel="stylesheet" th:href="@{/site/lib/owlcarousel/assets/owl.carousel.min.css}">
+  <!-- ========================= -->
+  <!-- CSS LIBRARIES -->
+  <!-- ========================= -->
+  <link rel="stylesheet" th:href="@{/site/lib/lightbox/css/lightbox.min.css}">
+  <link rel="stylesheet" th:href="@{/site/lib/owlcarousel/assets/owl.carousel.min.css}">
 
-    <!-- ========================= -->
-    <!-- BOOTSTRAP & MAIN CSS -->
-    <!-- ========================= -->
-    <link rel="stylesheet" th:href="@{/site/css/bootstrap.min.css}">
-    <link rel="stylesheet" th:href="@{/site/css/style.css}">
+  <!-- ========================= -->
+  <!-- BOOTSTRAP & MAIN CSS -->
+  <!-- ========================= -->
+  <link rel="stylesheet" th:href="@{/site/css/bootstrap.min.css}">
+  <link rel="stylesheet" th:href="@{/site/css/style.css}">
 
-    <!-- ========================= -->
-    <!-- SCHEMA.ORG JSON-LD -->
-    <!-- ========================= -->
+  <!-- ========================= -->
+  <!-- SCHEMA.ORG JSON-LD -->
+  <!-- ========================= -->
 
-    <!-- Website -->
-    <script type="application/ld+json" th:inline="javascript" th:if="${schemaPage == 'home'}">
+  <!-- Website -->
+  <script type="application/ld+json" th:inline="javascript" th:if="${schemaPage == 'home'}">
     {
       "@context": "https://schema.org",
       "@type": "WebSite",
@@ -146,8 +145,8 @@
     }
     </script>
 
-    <!-- Product list -->
-    <script type="application/ld+json" th:inline="javascript" th:if="${schemaPage == 'productList'}">
+  <!-- Product list -->
+  <script type="application/ld+json" th:inline="javascript" th:if="${schemaPage == 'productList'}">
     {
       "@context": "https://schema.org",
       "@type": "CollectionPage",
@@ -156,9 +155,9 @@
     }
     </script>
 
-    <!-- Product detail -->
-    <script type="application/ld+json" th:inline="javascript"
-            th:if="${schemaPage == 'productDetail' and product != null}">
+  <!-- Product detail -->
+  <script type="application/ld+json" th:inline="javascript"
+    th:if="${schemaPage == 'productDetail' and product != null}">
     {
       "@context": "https://schema.org",
       "@type": "Product",
@@ -175,45 +174,142 @@
       }
     }
     </script>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-VS1FW0MNF5"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
 
+    gtag('config', 'G-VS1FW0MNF5');
+  </script>
 </head>
 
 <body>
-    <!-- Spinner Start -->
-    <div id="spinner"
-        class="show w-100 vh-100 bg-white position-fixed translate-middle top-50 start-50 d-flex align-items-center justify-content-center">
-        <div class="spinner-grow text-primary" role="status"></div>
-    </div>
-    <!-- Spinner End -->
+  <!-- Spinner Start -->
+  <div id="spinner"
+    class="show w-100 vh-100 bg-white position-fixed translate-middle top-50 start-50 d-flex align-items-center justify-content-center">
+    <div class="spinner-grow text-primary" role="status"></div>
+  </div>
+  <!-- Spinner End -->
 
-    <th:block th:replace="~{site/layout/header :: header}"></th:block>
+  <th:block th:replace="~{site/layout/header :: header}"></th:block>
 
-    <main>
-        <div th:replace="~{${content}}"></div>
-    </main>
+  <main>
+    <div th:replace="~{${content}}"></div>
+  </main>
 
-    <th:block th:replace="~{site/layout/footer :: footer}"></th:block>
+  <th:block th:replace="~{site/layout/footer :: footer}"></th:block>
 
 
-    <!-- Back to Top -->
-    <a href="#" class="btn btn-primary border-3 border-primary rounded-circle back-to-top">
-        <i class="fa fa-arrow-up"></i>
+  <!-- Back to Top -->
+  <a href="#" class="btn btn-primary border-3 border-primary rounded-circle back-to-top">
+    <i class="fa fa-arrow-up"></i>
+  </a>
+
+  <!-- JavaScript Libraries -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Lib JS -->
+  <script th:src="@{/site/lib/easing/easing.min.js}"></script>
+  <script th:src="@{/site/lib/waypoints/waypoints.min.js}"></script>
+  <script th:src="@{/site/lib/lightbox/js/lightbox.min.js}"></script>
+  <script th:src="@{/site/lib/owlcarousel/owl.carousel.min.js}"></script>
+
+  <!-- Main -->
+  <script th:src="@{/site/js/main.js}"></script>
+
+  <div class="contactFloat">
+    <!-- CALL -->
+    <a href="tel:0354791618" class="cfItem phone" title="Gọi ngay">
+      <img th:src="@{site/img/phone-call.svg}" alt="Gọi điện">
     </a>
 
-    <!-- JavaScript Libraries -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- ZALO -->
+    <a href="https://zalo.me/0354791618" target="_blank" class="cfItem zalo" title="Chat Zalo">
+      <img th:src="@{site/img/zalo-call.svg}" alt="Zalo">
+    </a>
 
-    <!-- Lib JS -->
-    <script th:src="@{/site/lib/easing/easing.min.js}"></script>
-    <script th:src="@{/site/lib/waypoints/waypoints.min.js}"></script>
-    <script th:src="@{/site/lib/lightbox/js/lightbox.min.js}"></script>
-    <script th:src="@{/site/lib/owlcarousel/owl.carousel.min.js}"></script>
+    <!-- FACEBOOK MESSENGER -->
+    <a href="https://fb.com/61578131662324" target="_blank" class="cfItem fb" title="Chat Facebook">
+      <img th:src="@{site/img/mess-call.svg}" alt="Messenger">
+    </a>
 
-    <!-- Main -->
-    <script th:src="@{/site/js/main.js}"></script>
+    <style>
+      .contactFloat {
+        position: fixed;
+        right: 20px;
+        bottom: 80px;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+        z-index: 9999;
+      }
 
+      .cfItem {
+        width: 52px;
+        height: 52px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 6px 16px rgba(0, 0, 0, .2);
+        transition: .25s;
+      }
 
+      .cfItem img {
+        width: 24px;
+        height: 24px;
+      }
+
+      /* màu riêng từng thằng */
+      .cfItem.phone {
+        background: #1677ff;
+      }
+
+      .cfItem.zalo {
+        background: #0068ff;
+      }
+
+      .cfItem.fb {
+        background: #0084ff;
+      }
+
+      /* hover */
+      .cfItem:hover {
+        transform: translateY(-3px) scale(1.08);
+      }
+
+      /* rung nhẹ cho call (tăng conversion) */
+      @keyframes ring {
+        0% {
+          transform: rotate(0);
+        }
+
+        25% {
+          transform: rotate(10deg);
+        }
+
+        50% {
+          transform: rotate(-10deg);
+        }
+
+        75% {
+          transform: rotate(5deg);
+        }
+
+        100% {
+          transform: rotate(0);
+        }
+      }
+
+      .cfItem.phone {
+        animation: ring 1.2s infinite;
+      }
+    </style>
+
+  </div>
 </body>
 
 </html>

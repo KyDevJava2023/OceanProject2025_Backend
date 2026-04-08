@@ -40,7 +40,7 @@ public class Category {
     @JoinColumn(name = "parent_id", foreignKey = @ForeignKey(name = "fk_category_parent"))
     private Category parent;
 
-    @OneToMany(mappedBy = "parent")
+    @OneToMany(mappedBy = "parent", fetch = FetchType.LAZY)
     @Builder.Default
     private List<Category> children = new ArrayList<>();
 
